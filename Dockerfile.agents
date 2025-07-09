@@ -1,0 +1,146 @@
+# Multi-stage build for optimized image size
+FROM oven/bun:1.1.42-debian AS base
+
+# Install system dependencies and development tools
+RUN apt-get update && apt-get install -y \
+    # Basic utilities
+    curl \
+    wget \
+    git \
+    build-essential \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    # Development tools
+    tmux \
+    vim \
+    neovim \
+    htop \
+    jq \
+    ripgrep \
+    fd-find \
+    bat \
+    # Required for Node.js and npm (for global CLIs)
+    nodejs \
+    npm \
+    # Database client
+    postgresql-client \
+    # Required for Supabase CLI
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Supabase CLI
+RUN SUPABASE_VERSION=$(curl -s https://api.github.com/repos/supabase/cli/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/v//') \
+    && curl -L -o supabase.deb https://github.com/supabase/cli/releases/download/v${SUPABASE_VERSION}/supabase_${SUPABASE_VERSION}_linux_amd64.deb \
+    && dpkg -i supabase.deb \
+    && rm supabase.deb
+
+# Install global CLIs
+RUN npm install -g \
+    vercel@latest \
+    @vercel/ncc \
+    tsx \
+    && npm cache clean --force
+
+# Create non-root user for running agents
+RUN useradd -m -s /bin/bash agent && \
+    mkdir -p /home/agent/.config && \
+    chown -R agent:agent /home/agent
+
+# Switch to agent user
+USER agent
+WORKDIR /home/agent
+
+# Copy and setup dotfiles (you'll need to provide these)
+# Create placeholder dotfiles structure
+RUN mkdir -p .config/tmux .config/nvim .vim
+
+# Basic tmux configuration
+RUN echo '# Basic tmux configuration\n\
+    set -g default-terminal "screen-256color"\n\
+    set -g mouse on\n\
+    set -g base-index 1\n\
+    set -g pane-base-index 1\n\
+    set-window-option -g pane-base-index 1\n\
+    set-option -g renumber-windows on\n\
+    \n\
+    # Prefix key\n\
+    unbind C-b\n\
+    set -g prefix C-a\n\
+    bind C-a send-prefix\n\
+    \n\
+    # Split panes\n\
+    bind | split-window -h\n\
+    bind - split-window -v\n\
+    \n\
+    # Reload config\n\
+    bind r source-file ~/.tmux.conf \; display "Reloaded!"' > ~/.tmux.conf
+
+# Basic vim configuration
+RUN echo '" Basic vim configuration\n\
+    set nocompatible\n\
+    filetype plugin indent on\n\
+    syntax on\n\
+    set number\n\
+    set relativenumber\n\
+    set expandtab\n\
+    set tabstop=2\n\
+    set shiftwidth=2\n\
+    set autoindent\n\
+    set smartindent\n\
+    set ruler\n\
+    set showcmd\n\
+    set wildmenu\n\
+    set incsearch\n\
+    set hlsearch\n\
+    set background=dark\n\
+    \n\
+    " Enable mouse\n\
+    set mouse=a\n\
+    \n\
+    " Better navigation\n\
+    nnoremap <C-h> <C-w>h\n\
+    nnoremap <C-j> <C-w>j\n\
+    nnoremap <C-k> <C-w>k\n\
+    nnoremap <C-l> <C-w>l' > ~/.vimrc
+
+# Switch back to root for app setup
+USER root
+
+# Create app directory
+RUN mkdir -p /app && chown -R agent:agent /app
+WORKDIR /app
+
+# Copy package files
+COPY --chown=agent:agent package.json bun.lockb* ./
+
+# Switch to agent user for installation
+USER agent
+
+# Install dependencies
+RUN bun install --frozen-lockfile
+
+# Copy application code
+COPY --chown=agent:agent . .
+
+# Build the application if needed
+RUN bun run build || true
+
+# Create directories for logs and data
+RUN mkdir -p /app/logs /app/data /app/tmp
+
+# Configure Supabase CLI to use the main branch development environment
+RUN supabase link --project-ref obedkaipazzeixlwhqni || true
+
+# Environment variables for remote Supabase connection
+ENV NEXT_PUBLIC_SUPABASE_URL=""
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=""
+ENV SUPABASE_SERVICE_ROLE_KEY=""
+ENV DATABASE_URL=""
+ENV DIRECT_URL=""
+
+# Expose port for Next.js dev server
+EXPOSE 3000
+
+# Default command
+CMD ["bun", "run", "dev"] 

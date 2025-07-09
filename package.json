@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "dev": "bun --bun run next dev --turbopack",
+    "build": "bun --bun run next build",
+    "start": "bun --bun run next start",
+    "lint": "bun --bun run next lint",
+    "test": "bun run jest",
+    "test:watch": "bun run jest --watch",
+    "test:coverage": "bun run jest --coverage"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",

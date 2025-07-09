@@ -1,0 +1,14 @@
+{
+  "install": "chmod +x scripts/supabase-setup.sh scripts/tmux-init.sh && ./scripts/supabase-setup.sh && bun install",
+  "start": "",
+  "terminals": [
+    {
+      "name": "Development Environment",
+      "command": "./scripts/tmux-init.sh"
+    }
+  ],
+  "build": {
+    "context": ".",
+    "dockerfile": "../Dockerfile"
+  }
+}

@@ -1,0 +1,8 @@
+---
+description: Model Context Protocol Tools
+globs: *.tsx, *.ts, *.mjs, *.json, *.toml, *.md, *.mdx
+---
+Use Model Context Protocol Tools when asked to do so.
+
+- The Supabase tool can interact with the Supabase projects and services.
+- The Notion tool can interact with Notion

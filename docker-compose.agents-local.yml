@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # Background agents container that connects to existing Supabase
+  agents:
+    build:
+      context: .
+      dockerfile: Dockerfile.agents
+    container_name: opportunity-radar-agents
+    restart: unless-stopped
+    environment:
+      # Connect to host Supabase instance
+      SUPABASE_URL: ${SUPABASE_URL:-http://host.docker.internal:54321}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+      DIRECT_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+      SUPABASE_DB_HOST: host.docker.internal
+      SUPABASE_DB_PORT: 54322
+      
+      # Application settings
+      NODE_ENV: ${NODE_ENV:-development}
+      
+      # AI/ML API Keys
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY}
+      VOYAGE_API_KEY: ${VOYAGE_API_KEY}
+      
+      # External services
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      
+      # URLs
+      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-http://localhost:54321}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    
+    volumes:
+      # Mount source code for development
+      - ./:/app:cached
+      - /app/node_modules
+      - /app/.next
+      - /app/bun.lockb
+      
+      # Persist logs and data
+      - agent-logs:/app/logs
+      - agent-data:/app/data
+      
+      # Mount your actual dotfiles if you have them
+      # - ~/.tmux.conf:/home/agent/.tmux.conf:ro
+      # - ~/.vimrc:/home/agent/.vimrc:ro
+      # - ~/.vim:/home/agent/.vim:ro
+      # - ~/.config/nvim:/home/agent/.config/nvim:ro
+    
+    extra_hosts:
+      # Allow container to connect to host services
+      - "host.docker.internal:host-gateway"
+    
+    # Interactive terminal for tmux
+    stdin_open: true
+    tty: true
+    
+    # Port mappings for debugging
+    ports:
+      - "9229:9229"  # Node.js debugging
+      - "9230:9230"  # Additional debugging ports
+      - "9231:9231"
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  agent-logs:
+    driver: local
+  agent-data:
+    driver: local 
