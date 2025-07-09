@@ -4,7 +4,7 @@
   "terminals": [
     {
       "name": "Development Environment",
-      "command": "./scripts/tmux-init.sh"
+      "command": "../scripts/tmux-init.sh"
     }
   ],
   "build": {
