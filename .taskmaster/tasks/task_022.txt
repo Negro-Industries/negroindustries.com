@@ -1,0 +1,11 @@
+# Task ID: 22
+# Title: Develop Telegram Bot Integration
+# Status: pending
+# Dependencies: 20
+# Priority: high
+# Description: Set up Telegram bots for user interaction with the AI agents using node-telegram-bot-api.
+# Details:
+Create Telegram bots using BotFather and obtain API tokens. Implement bot handlers using node-telegram-bot-api (version 0.61.0 or later). Set up webhook or polling mechanism for receiving messages. Create conversation flows for project submission and interaction. Implement inline buttons for user responses (yes/no, approve, deploy). Store conversation state in Supabase. Create middleware for authentication and user identification. Implement rate limiting to prevent abuse. Set up error handling and logging for bot interactions. Create a bot management dashboard for administrators. Implement multi-bot architecture with one bot per agent or function group.
+
+# Test Strategy:
+Test bot responses to various user inputs. Verify inline buttons work correctly. Test conversation state persistence. Validate error handling with invalid inputs. Test rate limiting functionality.

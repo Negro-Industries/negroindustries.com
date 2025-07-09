@@ -1,0 +1,11 @@
+# Task ID: 18
+# Title: Develop Terminal-Style Dashboard Layout
+# Status: pending
+# Dependencies: 16, 17
+# Priority: medium
+# Description: Create a TMUX-inspired terminal layout for the dashboard with multiple panes for displaying agent activities.
+# Details:
+Design a responsive grid layout that mimics terminal multiplexers like TMUX. Implement resizable and collapsible panes using CSS Grid and JavaScript for interactivity. Create a terminal window component with features like title bar, minimize/maximize buttons, and scrollable content area. Use monospace fonts and terminal-like styling (cursor, command prompts, etc.). Implement keyboard shortcuts for pane navigation. Create a layout persistence system using localStorage or server-side storage. Ensure the layout is responsive and degrades gracefully on mobile devices by stacking panes vertically.
+
+# Test Strategy:
+Test pane resizing, collapsing, and expanding functionality. Verify keyboard shortcuts work as expected. Test layout persistence across page reloads. Validate responsive behavior across different device sizes.

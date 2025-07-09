@@ -1,205 +1,177 @@
-# 📘 Product Requirements Document (PRD)
-
-## Project: Negro Industries – Marketing Agent Prototype
-
-### Owner: James Washington  
-### Created: 2025-06-07  
-### Version: 1.0
+# 📝 Negro Industries — PRD (Product Requirements Document)
 
 ---
 
-## 🎯 Goal
+## 📌 Overview
 
-Build a marketing agent pipeline that:
-- Monitors GitHub repositories for new commits or pull request merges.
-- Generates social media-ready posts based on commit diffs using GPT-4.
-- Sends the post to a Telegram bot for manual approval via inline buttons.
-- Upon approval, logs the event and (optionally) publishes to social media platforms (future milestone).
-- Displays a **live, verbose activity log** via the Negro Industries dashboard.
+**Negro Industries** is an AI-powered SaaS orchestration platform styled like a **Michelin-star restaurant** with an **open kitchen**. The public-facing site is **serious, minimal, and high-end**—styled in **ASCII graphics** with **Geist Mono** font—while the backend **AI agents** are **cool, human-like digital coworkers** who provide transparent updates in a playful, authentic voice.
 
----
+Users can:
 
-## 🧱 Core Features
-
-### 1. GitHub Webhook Listener
-- Listens for `push` and `pull_request` events.
-- Extracts relevant metadata: repo name, PR title, commits, and file diffs.
-- Passes the data to the agent pipeline.
-
-### 2. Commit Diff Summarization
-- Extracts:
-  - PR title & description
-  - Diff summary (changed files, lines added/removed)
-  - Author name and commit messages
-- Feeds to GPT-4 to generate a social media post (Tweet/LinkedIn-ready).
-
-### 3. Telegram Bot Integration
-- Sends generated post to Telegram via a bot message.
-- Includes inline buttons: ✅ Approve | ❌ Reject
-- On approval, logs the outcome (for now) and returns confirmation.
-
-### 4. Logging & Dashboard
-- Logs all events:
-  - "Webhook received"
-  - "Generating post"
-  - "Sent to Telegram"
-  - "Approved by user"
-- Frontend dashboard displays live logs via:
-  - WebSocket stream **OR**
-  - Supabase Realtime table with live polling
+* Submit projects via **Telegram bots**.
+* Watch **live agent activity logs** streamed to the site.
+* Purchase services via **Stripe payments**.
+* Receive AI-generated outputs like PRDs, code scaffolds, deployments, changelogs, and social posts.
 
 ---
 
-## 🖥️ Tech Stack
+## 💽 UI & Design
 
-| Component               | Stack                            |
-|------------------------|----------------------------------|
-| Frontend Dashboard      | Next.js 15 (App Router), ShadCN  |
-| Log Streaming           | Supabase or WebSocket feed       |
-| GitHub Integration      | Octokit + Webhooks               |
-| Telegram Bot            | Telegram Bot API                 |
-| AI Caption Generator    | OpenAI GPT-4 Turbo               |
-| Backend Services        | Node.js API Routes               |
-| Deployment              | Vercel or SST (if serverless)    |
+### Public Site (Next.js 15)
 
----
+* **ASCII-inspired interface** (no heavy graphics).
+* **Geist Mono** font via Vercel npm package (`@geist-ui/react` or `@geist-ui/core`).
+* Serious, monochrome, minimal color use (black, white, grayscale).
+* Responsive design for web and mobile.
 
-## 📂 Directory Structure (Recommended)
+### Dashboard
 
-```
-app/
-├── api/
-│   ├── github/
-│   │   └── webhook/
-│   │       └── route.ts
-│   ├── telegram/
-│   │   └── webhook/
-│   │       └── route.ts
-│   └── logs/
-│       └── route.ts
-├── dashboard/
-│   └── page.tsx
-├── components/
-│   ├── activity-log.tsx
-│   └── dashboard-layout.tsx
-└── lib/
-    ├── github.ts
-    ├── telegram.ts
-    ├── openai.ts
-    └── supabase.ts
-```
+* **Terminal-style panes** (like TMUX) for each active AI agent.
+* Real-time log streaming (Supabase Realtime or WebSocket).
+* User project list, task history, and billing status.
 
 ---
 
-## 🚀 Development Phases
+## 👥 AI Agents ("The Team")
 
-### Phase 1: Foundation & Setup
-- Set up Next.js 15 project with TypeScript
-- Configure Supabase for logging
-- Set up environment variables and configuration
-- Create basic dashboard layout with ShadCN components
+Each AI agent has:
 
-### Phase 2: GitHub Integration
-- Implement GitHub webhook endpoint
-- Set up Octokit for GitHub API interactions
-- Create webhook payload parsing and validation
-- Test webhook reception and data extraction
+* **Name**
+* **Job title**
+* **Personality (flava)**
+* **Why their work matters (selling the value)**
 
-### Phase 3: AI Content Generation
-- Integrate OpenAI GPT-4 API
-- Create prompt engineering for social media posts
-- Implement diff summarization logic
-- Test content generation with sample commits
+| Name           | Role            | Voice & Tone                                    |
+| -------------- | --------------- | ----------------------------------------------- |
+| **Dot Matrix** | Project Chef    | Precise, a little sassy                         |
+| **Repo Rocco** | Code Scaffolder | Chill, "get it done" vibe                       |
+| **Chango**     | Hype Machine    | Hype man energy, social media savvy             |
+| **Lola Lingo** | Storyteller     | Smooth, clever, brand voice queen               |
+| **Stack Jack** | Infra Boss      | Tech muscle, no-nonsense but playful            |
+| **Boss Lady**  | Payment Closer  | Confident, sharp, encourages upgrades naturally |
 
-### Phase 4: Telegram Bot Integration
-- Set up Telegram Bot API
-- Create bot webhook endpoint
-- Implement inline keyboard for approval/rejection
-- Handle user interactions and callbacks
+---
 
-### Phase 5: Logging & Real-time Dashboard
-- Implement comprehensive logging system
-- Set up Supabase Realtime or WebSocket streaming
-- Create live activity log component
-- Add real-time updates to dashboard
+## 💬 Conversational Interface
 
-### Phase 6: Testing & Deployment
-- Comprehensive testing of the entire pipeline
-- Set up CI/CD pipeline
-- Deploy to Vercel
-- Configure production webhooks and environment variables
+* **Telegram Bots (node-telegram-bot-api)**:
+
+  * Multi-bot setup (one per agent or function group).
+  * Multi-step, multi-turn AI conversations using **Vercel AI SDK**.
+  * Supports inline buttons (yes/no, approve, deploy).
+  * Conversation state saved to **Supabase**.
+
+* **Human-in-the-loop:**
+  Agents pause and wait for Telegram user input before executing tools (repo creation, deploy, post).
+
+---
+
+## 🔧 Tech Stack
+
+| Layer         | Tools                                         |
+| ------------- | --------------------------------------------- |
+| Frontend      | Next.js 15 (App Router), Geist Mono           |
+| AI Backend    | Vercel AI SDK, OpenAI tools, function calling |
+| Bots          | node-telegram-bot-api                         |
+| Orchestration | Supabase (Postgres, KV, Realtime)             |
+| Payments      | Stripe (checkout + webhooks)                  |
+| Deployment    | Vercel + optional Cloudflare Workers          |
+| Shared Code   | `/packages/shared-utils` monorepo package     |
+
+---
+
+## 💳 Payments
+
+* **Stripe Checkout** (one-time and subscription).
+* Agents prompt for upgrades mid-workflow when premium features are needed.
+* Payment status is displayed in both Telegram and Dashboard.
+
+---
+
+## 📈 Live Updates & Transparency
+
+* All AI agent activity is **visible in real time** on the dashboard.
+* Users see:
+
+  * What agents are doing.
+  * Why it matters.
+  * How it saves time or adds value.
+
+---
+
+## 🛃 Roadmap
+
+| Phase   | Deliverables                                           |
+| ------- | ------------------------------------------------------ |
+| Phase 1 | Next.js site + ASCII design + Geist Mono styling       |
+| Phase 2 | Telegram bot MVP + AI SDK integration + Supabase state |
+| Phase 3 | Dashboard live logs + Stripe payment flow              |
+| Phase 4 | Multi-agent orchestration + public launch              |
 
 ---
 
 ## 🔧 Technical Requirements
 
-### Environment Variables
-- `GITHUB_WEBHOOK_SECRET`
-- `OPENAI_API_KEY`
-- `TELEGRAM_BOT_TOKEN`
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
+### Frontend Requirements
+* Next.js 15 with App Router
+* Geist Mono font implementation
+* ASCII-inspired UI components
+* Responsive design for mobile and desktop
+* Real-time dashboard with terminal-style panes
+* Live log streaming interface
+* User authentication and project management
 
-### Database Schema (Supabase)
-```sql
-CREATE TABLE activity_logs (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  timestamp TIMESTAMPTZ DEFAULT NOW(),
-  event_type TEXT NOT NULL,
-  repository TEXT,
-  pr_title TEXT,
-  author TEXT,
-  generated_post TEXT,
-  status TEXT DEFAULT 'pending',
-  telegram_message_id TEXT,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
+### Backend Requirements
+* Telegram bot API integration using node-telegram-bot-api
+* Vercel AI SDK for multi-turn conversations
+* OpenAI function calling for tool execution
+* Supabase for database, real-time, and state management
+* Stripe integration for payments and subscriptions
+* Multi-agent orchestration system
+* Human-in-the-loop workflow management
 
-### API Endpoints
-- `POST /api/github/webhook` - GitHub webhook receiver
-- `POST /api/telegram/webhook` - Telegram bot webhook
-- `GET /api/logs` - Fetch activity logs
-- `GET /api/logs/stream` - WebSocket for real-time logs
+### AI Agent System
+* Six distinct AI agents with unique personalities
+* Conversational state management
+* Tool execution with user approval
+* Real-time activity logging
+* Progress tracking and reporting
+* Payment integration and upgrade prompts
 
----
-
-## 🎯 Success Criteria
-
-1. **GitHub Integration**: Successfully receives and processes webhook events
-2. **AI Generation**: Generates relevant, engaging social media posts from commit diffs
-3. **Telegram Approval**: Seamless approval workflow via Telegram bot
-4. **Real-time Dashboard**: Live activity log updates without page refresh
-5. **Reliability**: 99% uptime for webhook processing
-6. **Performance**: <2 seconds from webhook to Telegram notification
+### Infrastructure
+* Vercel deployment for frontend
+* Supabase backend services
+* Stripe webhook handling
+* Real-time communication between agents and frontend
+* Secure API key management
+* Monitoring and logging systems
 
 ---
 
-## 🚨 Risks & Mitigations
+## 📋 Core Features
 
-### Technical Risks
-- **GitHub API Rate Limits**: Implement proper error handling and retry logic
-- **OpenAI API Failures**: Add fallback content generation or retry mechanisms
-- **Telegram Bot Downtime**: Queue messages for retry when service is restored
+### User Journey
+1. User initiates conversation with Telegram bot
+2. AI agent gathers project requirements through conversation
+3. Agent presents plan and pricing options
+4. User approves and makes payment via Stripe
+5. Agent executes tasks with real-time updates
+6. User receives deliverables and can track progress on dashboard
 
-### Security Risks
-- **Webhook Validation**: Verify GitHub webhook signatures
-- **API Key Exposure**: Use environment variables and secure storage
-- **Unauthorized Access**: Implement proper authentication for dashboard
+### Key Deliverables
+* Project Requirements Documents (PRDs)
+* Code scaffolding and repository setup
+* Deployment automation
+* Social media content generation
+* Brand voice and storytelling
+* Infrastructure provisioning
+* Payment processing and subscription management
 
-### Scalability Risks
-- **High Webhook Volume**: Implement queue system for processing
-- **Database Growth**: Set up log rotation and archival strategy
-- **Real-time Connections**: Optimize WebSocket/Realtime connections
-
----
-
-## 📋 Future Enhancements (Post-MVP)
-
-1. **Multi-Platform Publishing**: Auto-publish to Twitter, LinkedIn, etc.
-2. **Content Customization**: Platform-specific post formatting
-3. **Analytics Dashboard**: Track engagement metrics
-4. **Team Collaboration**: Multiple approvers and role-based access
-5. **AI Improvements**: Fine-tuned models for better content generation
-6. **Repository Filtering**: Selective monitoring of specific repos/branches 
+### Technical Integrations
+* Telegram Bot API for user communication
+* Vercel AI SDK for conversational AI
+* OpenAI for language models and function calling
+* Supabase for data persistence and real-time updates
+* Stripe for payment processing
+* GitHub API for repository management
+* Vercel API for deployment automation 

@@ -1,0 +1,11 @@
+# Task ID: 17
+# Title: Implement Geist Mono Typography and ASCII-inspired Design System
+# Status: pending
+# Dependencies: 16
+# Priority: high
+# Description: Create a design system with Geist Mono font and ASCII-inspired UI components for the minimal, high-end aesthetic.
+# Details:
+Install Geist Mono font via npm using `@vercel/typography` or directly from the Vercel font repository. Create a global CSS file to define typography scales and font weights. Develop reusable ASCII-inspired UI components including buttons, cards, dividers, and terminal windows using CSS and potentially SVG for complex ASCII art. Implement a monochrome color palette with black, white, and grayscale values. Create a theme provider using React Context API to manage the design system. Ensure all components are responsive using CSS Grid and Flexbox. Document the design system with Storybook or a custom documentation page.
+
+# Test Strategy:
+Test the design system across different viewport sizes to ensure responsiveness. Verify font loading performance. Create visual regression tests for UI components. Validate accessibility compliance using axe or similar tools.

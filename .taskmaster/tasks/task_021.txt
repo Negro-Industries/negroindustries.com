@@ -1,0 +1,11 @@
+# Task ID: 21
+# Title: Implement Real-time Log Streaming
+# Status: pending
+# Dependencies: 18, 20
+# Priority: medium
+# Description: Create a real-time log streaming system to display AI agent activities on the dashboard.
+# Details:
+Use Supabase Realtime or WebSockets to stream agent activity logs. Create a log entry database table with fields for timestamp, agent ID, message, log level, and related project. Implement a log writer service that agents use to record their activities. Create a log reader component for the dashboard that subscribes to real-time updates. Implement log filtering by agent, project, and log level. Add search functionality for logs. Create a log retention policy and archiving system. Implement log export functionality. Style logs to match the terminal aesthetic with appropriate colors for different log levels. Add auto-scrolling with the option to pause.
+
+# Test Strategy:
+Test real-time log updates with multiple concurrent activities. Verify log filtering and search functionality. Test performance with high-volume log generation. Validate log retention and archiving works correctly.

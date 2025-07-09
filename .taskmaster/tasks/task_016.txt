@@ -1,0 +1,11 @@
+# Task ID: 16
+# Title: Setup Next.js 15 Project with App Router
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Initialize the Next.js 15 project with App Router architecture for the public-facing site and dashboard.
+# Details:
+Create a new Next.js 15 project using `create-next-app` with TypeScript support. Configure the App Router architecture for routing. Set up the project structure with separate directories for the public site and dashboard. Initialize a monorepo structure with `/packages/shared-utils` for code sharing. Use pnpm as the package manager for better monorepo support. Install essential dependencies including React 18, next-auth for authentication, and configure ESLint and Prettier for code quality. Set up environment variables for development, staging, and production environments.
+
+# Test Strategy:
+Verify the project structure is correctly set up with App Router. Run the development server to ensure it starts without errors. Test the routing system with basic placeholder pages. Validate TypeScript configuration with sample components.

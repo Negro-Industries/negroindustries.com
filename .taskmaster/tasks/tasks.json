@@ -1,0 +1,584 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Set up Next.js 15 project with TypeScript and ShadCN",
+      "description": "Initialize the project with Next.js 15, TypeScript, and ShadCN UI components.",
+      "status": "done",
+      "dependencies": [],
+      "priority": "high",
+      "details": "1. Use create-next-app to set up a new Next.js 15 project with TypeScript\n2. Install and configure ShadCN UI library\n3. Set up basic project structure as per the recommended directory structure\n4. Configure ESLint and Prettier for code consistency\n5. Initialize Git repository and create initial commit",
+      "testStrategy": "Verify project setup by running the development server and checking for TypeScript and ShadCN integration.",
+      "subtasks": [
+        {
+          "id": "1.1",
+          "title": "Set up Next.js 15 with TypeScript",
+          "status": "completed",
+          "description": "Used create-next-app to initialize a Next.js 15 project with TypeScript support"
+        },
+        {
+          "id": "1.2",
+          "title": "Configure ShadCN UI library",
+          "status": "completed",
+          "description": "Installed and configured ShadCN UI components for the project"
+        },
+        {
+          "id": "1.3",
+          "title": "Create components directory structure",
+          "status": "completed",
+          "description": "Set up the recommended directory structure for components"
+        },
+        {
+          "id": "1.4",
+          "title": "Install and test Button component",
+          "status": "completed",
+          "description": "Added ShadCN Button component and verified it works correctly"
+        },
+        {
+          "id": "1.5",
+          "title": "Update project metadata",
+          "status": "completed",
+          "description": "Updated project metadata to reflect Negro Industries branding"
+        },
+        {
+          "id": "1.6",
+          "title": "Configure ESLint and code quality tools",
+          "status": "completed",
+          "description": "Set up ESLint for code consistency and verified it passes all checks"
+        },
+        {
+          "id": "1.7",
+          "title": "Verify build and development process",
+          "status": "completed",
+          "description": "Confirmed successful TypeScript compilation, build process, and development server functionality"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Configure Supabase for logging",
+      "description": "Set up Supabase project and configure it for activity logging.",
+      "status": "done",
+      "dependencies": [
+        1
+      ],
+      "priority": "high",
+      "details": "1. Create a new Supabase project\n2. Set up the activity_logs table using the provided SQL schema\n3. Generate and securely store Supabase API keys\n4. Install @supabase/supabase-js library (latest version)\n5. Create a Supabase client in lib/supabase.ts\n6. Implement basic CRUD operations for activity logs",
+      "testStrategy": "Write unit tests for Supabase CRUD operations using Jest and mock the Supabase client.",
+      "subtasks": [
+        {
+          "id": 2.1,
+          "title": "Install Supabase client library",
+          "status": "completed",
+          "description": "Install @supabase/supabase-js package"
+        },
+        {
+          "id": 2.2,
+          "title": "Create Supabase client configuration",
+          "status": "completed",
+          "description": "Set up Supabase client in lib/supabase.ts"
+        },
+        {
+          "id": 2.3,
+          "title": "Define ActivityLog interface",
+          "status": "completed",
+          "description": "Create TypeScript interface for activity logs with proper types"
+        },
+        {
+          "id": 2.4,
+          "title": "Implement CRUD operations",
+          "status": "completed",
+          "description": "Create functions for creating, reading, updating, and deleting activity logs including filtering capabilities"
+        },
+        {
+          "id": 2.5,
+          "title": "Create database schema",
+          "status": "completed",
+          "description": "Implement SQL schema in lib/database-schema.sql with activity_logs table, indexes, timestamp triggers, and UUID primary keys"
+        },
+        {
+          "id": 2.6,
+          "title": "Write unit tests",
+          "status": "completed",
+          "description": "Implement comprehensive tests for all CRUD operations and error handling with mock Supabase client"
+        },
+        {
+          "id": 2.7,
+          "title": "Create setup documentation",
+          "status": "completed",
+          "description": "Document Supabase setup process in SUPABASE_SETUP.md"
+        },
+        {
+          "id": 2.8,
+          "title": "Define environment variable structure",
+          "status": "completed",
+          "description": "Establish required environment variables for Supabase configuration"
+        },
+        {
+          "id": 2.9,
+          "title": "Verify build process",
+          "status": "completed",
+          "description": "Ensure TypeScript compilation is successful and build process works correctly"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Implement Telegram Bot orchestration endpoint",
+      "description": "Create an API route to handle Telegram bot events and orchestrate multi-agent AI workflows.",
+      "status": "pending",
+      "dependencies": [
+        1
+      ],
+      "priority": "high",
+      "details": "1. Create api/telegram/webhook/route.ts file\n2. Parse and validate incoming Telegram webhook payloads\n3. Route user messages to the appropriate AI agent (Dot Matrix, Repo Rocco, Chango, Lola Lingo, Stack Jack, Boss Lady) based on context and intent\n4. Implement multi-turn conversation state management\n5. Integrate Vercel AI SDK agents for agent responses\n6. Implement error handling, logging, and human-in-the-loop escalation",
+      "testStrategy": "Create unit tests with mock Telegram payloads to verify parsing, agent routing, and conversation state logic.",
+      "subtasks": []
+    },
+    {
+      "id": 4,
+      "title": "Integrate Vercel AI SDK agents for multi-agent orchestration",
+      "description": "Set up Vercel AI SDK and implement orchestration logic for six distinct AI agents.",
+      "status": "pending",
+      "dependencies": [
+        3
+      ],
+      "priority": "high",
+      "details": "1. Install @vercel/ai npm package (latest version)\n2. Set up agent clients in lib/agents.ts for Dot Matrix, Repo Rocco, Chango, Lola Lingo, Stack Jack, and Boss Lady\n3. Implement agent selection and orchestration logic for multi-turn conversations\n4. Enable agent collaboration and handoff between agents as needed\n5. Integrate with Telegram bot endpoint for real-time user interaction\n6. Implement retry logic and error handling for agent responses",
+      "testStrategy": "Write unit tests for agent orchestration logic and integration tests with sample Telegram conversations.",
+      "subtasks": []
+    },
+    {
+      "id": 5,
+      "title": "Implement advanced Telegram Bot integration",
+      "description": "Set up Telegram Bot API and create webhook for multi-agent user interactions and approvals.",
+      "status": "pending",
+      "dependencies": [
+        1
+      ],
+      "priority": "high",
+      "details": "1. Create a new Telegram Bot using BotFather\n2. Install node-telegram-bot-api (version 0.61.0 or later)\n3. Implement Telegram Bot client in lib/telegram.ts\n4. Create api/telegram/webhook/route.ts for handling bot events and agent orchestration\n5. Implement inline keyboard for human-in-the-loop approval/rejection and agent selection\n6. Handle user interactions, callbacks, and multi-turn conversations\n7. Integrate with AI agent orchestration to send and receive messages for approval and escalation",
+      "testStrategy": "Create integration tests using a test Telegram Bot to verify multi-agent message routing and human-in-the-loop workflows.",
+      "subtasks": []
+    },
+    {
+      "id": 6,
+      "title": "Develop real-time logging and monitoring system",
+      "description": "Implement a comprehensive logging system with real-time updates for agent and user interactions.",
+      "status": "pending",
+      "dependencies": [
+        2
+      ],
+      "priority": "medium",
+      "details": "1. Create a logging service in lib/logging.ts\n2. Implement log entry creation for all major events (Telegram events, agent responses, human approvals)\n3. Set up Supabase Realtime subscription for log updates\n4. Implement WebSocket fallback using Socket.io (version 4.6.0 or later) if needed\n5. Create an API endpoint for fetching paginated logs",
+      "testStrategy": "Write unit tests for logging functions and integration tests to verify real-time updates for agent and user events.",
+      "subtasks": []
+    },
+    {
+      "id": 7,
+      "title": "Create ASCII-inspired dashboard layout with Geist Mono",
+      "description": "Develop the main dashboard layout using ASCII-inspired UI, Geist Mono font, and ShadCN components.",
+      "status": "pending",
+      "dependencies": [
+        1
+      ],
+      "priority": "medium",
+      "details": "1. Create dashboard/page.tsx as the main dashboard page\n2. Implement responsive ASCII-inspired layout using ShadCN grid and card components\n3. Use Geist Mono font for all dashboard typography\n4. Create placeholder sections for real-time activity log, agent status, and statistics\n5. Implement dark mode toggle using ShadCN theme provider\n6. Ensure accessibility compliance with proper ARIA attributes",
+      "testStrategy": "Conduct visual regression testing and accessibility audits using tools like Cypress and axe-core.",
+      "subtasks": []
+    },
+    {
+      "id": 8,
+      "title": "Implement live activity log component for agent and user events",
+      "description": "Create a real-time updating activity log component for the dashboard, tracking agent and user interactions.",
+      "status": "pending",
+      "dependencies": [
+        6,
+        7
+      ],
+      "priority": "medium",
+      "details": "1. Create components/activity-log.tsx\n2. Implement infinite scrolling for log entries using react-window (version 1.8.9 or later) for performance\n3. Set up real-time subscription to log updates using Supabase Realtime or WebSocket\n4. Render log entries with ASCII-inspired styling and agent/user context\n5. Add filters for log types, agent, and date ranges",
+      "testStrategy": "Write unit tests for the activity log component and integration tests to verify real-time updates for agent and user events.",
+      "subtasks": []
+    },
+    {
+      "id": 9,
+      "title": "Develop end-to-end AI agent orchestration pipeline",
+      "description": "Connect all components to create a functioning pipeline from Telegram user input to multi-agent AI response and human-in-the-loop approval.",
+      "status": "pending",
+      "dependencies": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "priority": "high",
+      "details": "1. Implement a central orchestration service for agent workflow\n2. Connect Telegram webhook reception to agent orchestration\n3. Enable agent collaboration and handoff between agents\n4. Handle human-in-the-loop approvals and escalations via Telegram\n5. Ensure proper error handling and logging throughout the pipeline\n6. Implement retry mechanisms for failed steps",
+      "testStrategy": "Create end-to-end tests simulating the entire flow from Telegram user input to multi-agent response and human approval.",
+      "subtasks": []
+    },
+    {
+      "id": 10,
+      "title": "Implement authentication, authorization, and Stripe payments",
+      "description": "Add user authentication, role-based access control, and Stripe payments for the dashboard.",
+      "status": "pending",
+      "dependencies": [
+        7
+      ],
+      "priority": "high",
+      "details": "1. Implement authentication using Next-Auth.js (version 4.22.1 or later)\n2. Set up OAuth providers (Telegram, Google) for login\n3. Create user roles and permissions schema in Supabase\n4. Implement role-based access control for dashboard features\n5. Secure API routes with authentication middleware\n6. Integrate Stripe payments for SaaS subscriptions\n7. Add login/logout and subscription management to the dashboard",
+      "testStrategy": "Write unit tests for authentication, authorization, and payment logic. Integration tests for protected routes and payment flows.",
+      "subtasks": []
+    },
+    {
+      "id": 11,
+      "title": "Implement error handling and monitoring for multi-agent workflows",
+      "description": "Set up comprehensive error handling and monitoring throughout the multi-agent orchestration platform.",
+      "status": "pending",
+      "dependencies": [
+        9
+      ],
+      "priority": "medium",
+      "details": "1. Implement global error boundary for React components\n2. Set up error logging service (e.g., Sentry, version 7.54.0 or later)\n3. Create custom error classes for different types of agent and user errors\n4. Implement graceful degradation for non-critical failures\n5. Set up alerts for critical errors (e.g., email or Telegram notifications)\n6. Create an error log viewer in the dashboard",
+      "testStrategy": "Simulate various error scenarios and verify proper handling, logging, and notification for agent and user workflows.",
+      "subtasks": []
+    },
+    {
+      "id": 12,
+      "title": "Optimize performance and implement caching for agent orchestration",
+      "description": "Enhance platform performance through optimization and caching strategies for agent workflows.",
+      "status": "pending",
+      "dependencies": [
+        9
+      ],
+      "priority": "medium",
+      "details": "1. Implement Redis caching (using ioredis v5.3.2 or later) for frequently accessed agent and user data\n2. Optimize database queries and add appropriate indexes\n3. Implement server-side rendering (SSR) for initial page loads\n4. Use React.memo and useMemo for expensive computations\n5. Implement code splitting and lazy loading for dashboard components\n6. Set up a CDN for static assets",
+      "testStrategy": "Conduct performance profiling using Lighthouse and React DevTools. Write performance benchmark tests for agent orchestration.",
+      "subtasks": []
+    },
+    {
+      "id": 13,
+      "title": "Implement comprehensive testing suite for multi-agent SaaS platform",
+      "description": "Develop a full testing suite covering unit, integration, and end-to-end tests for agent orchestration, Telegram integration, and payments.",
+      "status": "pending",
+      "dependencies": [
+        9,
+        10,
+        11
+      ],
+      "priority": "high",
+      "details": "1. Set up Jest (version 29.5.0 or later) for unit and integration testing\n2. Implement React Testing Library for component tests\n3. Set up Cypress (version 12.14.0 or later) for end-to-end testing\n4. Create mock services for external APIs (Telegram, Vercel AI SDK, Stripe)\n5. Implement test coverage reporting\n6. Set up continuous integration to run tests on each push",
+      "testStrategy": "Aim for at least 80% test coverage. Include happy path and edge case scenarios for agent workflows, Telegram, and payments.",
+      "subtasks": []
+    },
+    {
+      "id": 14,
+      "title": "Set up CI/CD pipeline for AI SaaS orchestration platform",
+      "description": "Implement a continuous integration and deployment pipeline for the multi-agent SaaS platform.",
+      "status": "pending",
+      "dependencies": [
+        13
+      ],
+      "priority": "high",
+      "details": "1. Set up GitHub Actions for CI/CD\n2. Configure build, test, and deployment stages\n3. Implement automatic deployment to Vercel for production and staging environments\n4. Set up environment-specific configurations\n5. Implement rollback mechanisms for failed deployments\n6. Configure automatic database migrations",
+      "testStrategy": "Test the CI/CD pipeline with various scenarios (successful builds, failed tests, etc.) to ensure proper functionality.",
+      "subtasks": []
+    },
+    {
+      "id": 15,
+      "title": "Create user documentation and API references for AI orchestration platform",
+      "description": "Develop comprehensive documentation for users and developers of the multi-agent SaaS platform.",
+      "status": "pending",
+      "dependencies": [
+        14
+      ],
+      "priority": "low",
+      "details": "1. Create user guide for dashboard and Telegram bot usage\n2. Document API endpoints and agent orchestration flows using Swagger/OpenAPI (version 3.0)\n3. Write developer setup guide\n4. Create architectural overview and agent documentation\n5. Document deployment, configuration, and payment processes\n6. Set up automated documentation generation for API and agent changes",
+      "testStrategy": "Conduct user testing with the documentation to ensure clarity and completeness. Verify that API and agent documentation matches the actual implementation.",
+      "subtasks": []
+    }
+  ],
+  "master": {
+    "tasks": [
+      {
+        "id": 16,
+        "title": "Setup Next.js 15 Project with App Router",
+        "description": "Initialize the Next.js 15 project with App Router architecture for the public-facing site and dashboard.",
+        "details": "Create a new Next.js 15 project using `create-next-app` with TypeScript support. Configure the App Router architecture for routing. Set up the project structure with separate directories for the public site and dashboard. Initialize a monorepo structure with `/packages/shared-utils` for code sharing. Use pnpm as the package manager for better monorepo support. Install essential dependencies including React 18, next-auth for authentication, and configure ESLint and Prettier for code quality. Set up environment variables for development, staging, and production environments.",
+        "testStrategy": "Verify the project structure is correctly set up with App Router. Run the development server to ensure it starts without errors. Test the routing system with basic placeholder pages. Validate TypeScript configuration with sample components.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Implement Geist Mono Typography and ASCII-inspired Design System",
+        "description": "Create a design system with Geist Mono font and ASCII-inspired UI components for the minimal, high-end aesthetic.",
+        "details": "Install Geist Mono font via npm using `@vercel/typography` or directly from the Vercel font repository. Create a global CSS file to define typography scales and font weights. Develop reusable ASCII-inspired UI components including buttons, cards, dividers, and terminal windows using CSS and potentially SVG for complex ASCII art. Implement a monochrome color palette with black, white, and grayscale values. Create a theme provider using React Context API to manage the design system. Ensure all components are responsive using CSS Grid and Flexbox. Document the design system with Storybook or a custom documentation page.",
+        "testStrategy": "Test the design system across different viewport sizes to ensure responsiveness. Verify font loading performance. Create visual regression tests for UI components. Validate accessibility compliance using axe or similar tools.",
+        "priority": "high",
+        "dependencies": [
+          16
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 18,
+        "title": "Develop Terminal-Style Dashboard Layout",
+        "description": "Create a TMUX-inspired terminal layout for the dashboard with multiple panes for displaying agent activities.",
+        "details": "Design a responsive grid layout that mimics terminal multiplexers like TMUX. Implement resizable and collapsible panes using CSS Grid and JavaScript for interactivity. Create a terminal window component with features like title bar, minimize/maximize buttons, and scrollable content area. Use monospace fonts and terminal-like styling (cursor, command prompts, etc.). Implement keyboard shortcuts for pane navigation. Create a layout persistence system using localStorage or server-side storage. Ensure the layout is responsive and degrades gracefully on mobile devices by stacking panes vertically.",
+        "testStrategy": "Test pane resizing, collapsing, and expanding functionality. Verify keyboard shortcuts work as expected. Test layout persistence across page reloads. Validate responsive behavior across different device sizes.",
+        "priority": "medium",
+        "dependencies": [
+          16,
+          17
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 19,
+        "title": "Implement User Authentication System",
+        "description": "Set up user authentication with Supabase Auth for secure access to the dashboard and personalized experiences.",
+        "details": "Integrate Supabase Auth for user authentication. Create sign-up, sign-in, and password reset flows. Implement social authentication options if needed. Set up protected routes in Next.js using middleware. Create a user profile page for account management. Implement session management with refresh tokens. Store user preferences and settings in Supabase. Create authentication hooks for React components. Implement role-based access control for different user types (admin, regular user). Use Supabase Row Level Security (RLS) policies to secure data access.",
+        "testStrategy": "Test authentication flows including sign-up, sign-in, and password reset. Verify protected routes redirect unauthenticated users. Test session persistence and token refresh. Validate role-based access controls work correctly.",
+        "priority": "high",
+        "dependencies": [
+          16
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 20,
+        "title": "Set Up Supabase Backend Infrastructure",
+        "description": "Configure Supabase for database, real-time communication, and state management to support the platform's backend needs.",
+        "details": "Create a Supabase project and configure database tables for users, projects, agent activities, and conversations. Set up Supabase Realtime channels for live updates. Create database schemas with proper relationships and constraints. Implement Row Level Security policies for data protection. Set up Supabase Edge Functions for serverless backend logic. Configure Supabase Storage for file uploads if needed. Create database indexes for performance optimization. Set up database triggers for event-driven workflows. Implement database migrations for version control of schema changes. Create TypeScript types for database entities using Supabase's generated types.",
+        "testStrategy": "Test database CRUD operations for all entities. Verify real-time subscriptions work correctly. Test Row Level Security policies with different user roles. Validate performance with sample data load.",
+        "priority": "high",
+        "dependencies": [
+          16,
+          19
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 21,
+        "title": "Implement Real-time Log Streaming",
+        "description": "Create a real-time log streaming system to display AI agent activities on the dashboard.",
+        "details": "Use Supabase Realtime or WebSockets to stream agent activity logs. Create a log entry database table with fields for timestamp, agent ID, message, log level, and related project. Implement a log writer service that agents use to record their activities. Create a log reader component for the dashboard that subscribes to real-time updates. Implement log filtering by agent, project, and log level. Add search functionality for logs. Create a log retention policy and archiving system. Implement log export functionality. Style logs to match the terminal aesthetic with appropriate colors for different log levels. Add auto-scrolling with the option to pause.",
+        "testStrategy": "Test real-time log updates with multiple concurrent activities. Verify log filtering and search functionality. Test performance with high-volume log generation. Validate log retention and archiving works correctly.",
+        "priority": "medium",
+        "dependencies": [
+          18,
+          20
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 22,
+        "title": "Develop Telegram Bot Integration",
+        "description": "Set up Telegram bots for user interaction with the AI agents using node-telegram-bot-api.",
+        "details": "Create Telegram bots using BotFather and obtain API tokens. Implement bot handlers using node-telegram-bot-api (version 0.61.0 or later). Set up webhook or polling mechanism for receiving messages. Create conversation flows for project submission and interaction. Implement inline buttons for user responses (yes/no, approve, deploy). Store conversation state in Supabase. Create middleware for authentication and user identification. Implement rate limiting to prevent abuse. Set up error handling and logging for bot interactions. Create a bot management dashboard for administrators. Implement multi-bot architecture with one bot per agent or function group.",
+        "testStrategy": "Test bot responses to various user inputs. Verify inline buttons work correctly. Test conversation state persistence. Validate error handling with invalid inputs. Test rate limiting functionality.",
+        "priority": "high",
+        "dependencies": [
+          20
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 23,
+        "title": "Integrate Vercel AI SDK for Conversational AI",
+        "description": "Implement the Vercel AI SDK to power multi-turn AI conversations with personality-driven agents.",
+        "details": "Install and configure Vercel AI SDK (latest version). Set up OpenAI API integration with appropriate models (GPT-4 or equivalent). Create AI agent personalities and system prompts for each of the six defined agents. Implement conversation memory and context management. Create function calling capabilities for tool execution. Implement streaming responses for real-time interaction. Set up conversation logging and analytics. Create fallback mechanisms for handling AI limitations. Implement prompt engineering techniques for consistent agent personalities. Create a prompt management system for easy updates.",
+        "testStrategy": "Test multi-turn conversations for coherence and context retention. Verify each agent maintains its unique personality. Test function calling with various tools. Validate streaming response performance. Test error handling with API failures.",
+        "priority": "high",
+        "dependencies": [
+          22
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 24,
+        "title": "Implement AI Agent System Architecture",
+        "description": "Design and implement the core architecture for the six AI agents with distinct personalities and responsibilities.",
+        "details": "Create a base Agent class with common functionality. Implement specific agent classes for each role (Project Chef, Code Scaffolder, etc.). Define agent personalities, voices, and responsibilities in configuration. Create an agent factory for instantiating appropriate agents. Implement agent state management using Supabase. Create an agent orchestration system for coordinating multi-agent workflows. Implement tool execution capabilities with appropriate permissions. Create agent activity logging system. Implement agent-to-agent communication channels. Create a human-in-the-loop approval system for critical actions. Implement error handling and recovery mechanisms.",
+        "testStrategy": "Test agent instantiation and configuration. Verify each agent performs its specific responsibilities correctly. Test multi-agent orchestration with complex workflows. Validate human approval system works as expected. Test error recovery mechanisms.",
+        "priority": "high",
+        "dependencies": [
+          20,
+          23
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 25,
+        "title": "Develop OpenAI Function Calling for Tool Execution",
+        "description": "Implement OpenAI function calling to allow AI agents to execute tools and perform actions based on user conversations.",
+        "details": "Define function schemas for various tools (repository creation, deployment, social posting, etc.). Implement function handlers for each tool. Create a function registry system to manage available tools. Implement permission checking for function execution. Create a function execution logging system. Implement rate limiting for API-intensive functions. Create mock functions for testing and development. Implement error handling and retry mechanisms. Create a function execution queue for asynchronous operations. Implement function result caching where appropriate.",
+        "testStrategy": "Test function calling with various inputs. Verify permission checking works correctly. Test rate limiting functionality. Validate error handling and retry mechanisms. Test asynchronous function execution.",
+        "priority": "high",
+        "dependencies": [
+          23,
+          24
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 26,
+        "title": "Implement Stripe Payment Integration",
+        "description": "Integrate Stripe for payment processing, including one-time purchases and subscriptions.",
+        "details": "Set up Stripe account and API keys. Implement Stripe Checkout for payment processing. Create product and price configurations in Stripe dashboard. Implement webhook handling for payment events. Create subscription management functionality. Implement payment status tracking in the database. Create payment history and receipt functionality. Implement upgrade prompts within agent conversations. Create a billing dashboard for users. Implement payment failure handling and retry mechanisms. Set up tax and currency handling if needed.",
+        "testStrategy": "Test payment flows with Stripe test mode. Verify webhook handling for various payment events. Test subscription creation, updating, and cancellation. Validate payment status tracking. Test upgrade prompts within conversations.",
+        "priority": "high",
+        "dependencies": [
+          19,
+          20
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 27,
+        "title": "Create Project Management Interface",
+        "description": "Develop a user interface for managing projects, viewing history, and tracking progress.",
+        "details": "Create a projects list view with filtering and sorting options. Implement project detail pages showing status, history, and deliverables. Create a project creation flow integrated with Telegram conversations. Implement project status tracking and updates. Create a deliverables section for accessing outputs. Implement project archiving functionality. Create project sharing and collaboration features if needed. Implement project templates for common use cases. Create project analytics and insights. Implement project export functionality.",
+        "testStrategy": "Test project CRUD operations. Verify filtering and sorting functionality. Test project status updates. Validate deliverables access and management. Test project archiving and retrieval.",
+        "priority": "medium",
+        "dependencies": [
+          18,
+          19,
+          20
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 28,
+        "title": "Implement Human-in-the-Loop Approval System",
+        "description": "Create a system for AI agents to pause and wait for user approval before executing critical actions.",
+        "details": "Define critical actions requiring human approval (repository creation, deployment, posting). Implement approval request generation in agent workflows. Create approval UI components for Telegram and dashboard. Implement approval state tracking in the database. Create notification system for pending approvals. Implement timeout handling for approvals. Create approval history and audit logging. Implement approval delegation for team scenarios if needed. Create approval analytics for tracking response times and patterns.",
+        "testStrategy": "Test approval requests in various workflows. Verify approval UI works correctly in both Telegram and dashboard. Test timeout handling. Validate approval history and audit logging. Test notification system for pending approvals.",
+        "priority": "medium",
+        "dependencies": [
+          22,
+          24,
+          27
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 29,
+        "title": "Develop Multi-Agent Orchestration System",
+        "description": "Create a system for coordinating multiple AI agents working together on user projects.",
+        "details": "Implement a workflow engine for defining multi-agent processes. Create a task queue system for agent work items. Implement agent selection logic based on task requirements. Create inter-agent communication channels. Implement workflow state persistence in Supabase. Create workflow visualization for the dashboard. Implement error handling and recovery for workflow failures. Create workflow templates for common project types. Implement workflow analytics and optimization. Create a workflow designer for custom workflows if needed.",
+        "testStrategy": "Test multi-agent workflows with various scenarios. Verify task queuing and execution. Test inter-agent communication. Validate workflow state persistence. Test error recovery mechanisms. Validate workflow visualization.",
+        "priority": "high",
+        "dependencies": [
+          24,
+          25
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 30,
+        "title": "Implement GitHub Integration for Repository Management",
+        "description": "Integrate with GitHub API to allow AI agents to create and manage code repositories.",
+        "details": "Set up GitHub App or OAuth integration. Implement repository creation functionality. Create branch and commit management features. Implement pull request creation and management. Create code scaffolding templates for common project types. Implement repository permission management. Create webhook handling for repository events. Implement repository analytics and insights. Create repository backup and archiving functionality.",
+        "testStrategy": "Test repository creation with various templates. Verify branch and commit operations. Test pull request creation and management. Validate permission management. Test webhook handling for repository events.",
+        "priority": "medium",
+        "dependencies": [
+          25,
+          28
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 31,
+        "title": "Develop Vercel Deployment Integration",
+        "description": "Integrate with Vercel API to enable automated deployments of user projects.",
+        "details": "Set up Vercel API integration with authentication. Implement project deployment functionality. Create deployment configuration management. Implement environment variable handling. Create deployment preview and production workflows. Implement deployment rollback functionality. Create deployment analytics and monitoring. Implement custom domain configuration. Create deployment notifications and alerts.",
+        "testStrategy": "Test deployment with various project types. Verify environment variable handling. Test deployment preview and production workflows. Validate rollback functionality. Test custom domain configuration.",
+        "priority": "medium",
+        "dependencies": [
+          25,
+          28,
+          30
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 32,
+        "title": "Create Social Media Content Generation System",
+        "description": "Implement functionality for AI agents to generate and schedule social media content.",
+        "details": "Create content generation prompts for various platforms (Twitter, LinkedIn, etc.). Implement content review and approval workflow. Create content scheduling functionality. Implement platform-specific formatting and constraints. Create content analytics and performance tracking. Implement content calendar visualization. Create content templates and themes. Implement hashtag and keyword optimization. Create content variation generation for A/B testing.",
+        "testStrategy": "Test content generation for various platforms. Verify review and approval workflow. Test scheduling functionality. Validate platform-specific formatting. Test content analytics and tracking.",
+        "priority": "low",
+        "dependencies": [
+          24,
+          25,
+          28
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 33,
+        "title": "Implement API Key and Secrets Management",
+        "description": "Create a secure system for managing API keys and secrets used by the platform.",
+        "details": "Implement encrypted storage for API keys and secrets. Create a key rotation system for security. Implement access control for key usage. Create audit logging for key access. Implement key usage analytics and monitoring. Create key backup and recovery procedures. Implement integration with cloud key management services if needed. Create a key management UI for administrators.",
+        "testStrategy": "Test encrypted storage security. Verify key rotation functionality. Test access control for various user roles. Validate audit logging for key access. Test key backup and recovery procedures.",
+        "priority": "high",
+        "dependencies": [
+          19,
+          20
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 34,
+        "title": "Develop Monitoring and Logging System",
+        "description": "Implement comprehensive monitoring and logging for the platform's operations.",
+        "details": "Set up application performance monitoring (APM) with a service like Datadog, New Relic, or Sentry. Implement structured logging with levels and contexts. Create error tracking and alerting. Implement user activity logging for security. Create system health dashboards. Implement log aggregation and analysis. Create automated alerting for critical issues. Implement performance benchmarking and tracking. Create security incident logging and response procedures.",
+        "testStrategy": "Test logging with various event types. Verify error tracking and alerting. Test user activity logging. Validate system health dashboards. Test automated alerting for critical issues.",
+        "priority": "medium",
+        "dependencies": [
+          16,
+          20
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 35,
+        "title": "Create Comprehensive Documentation",
+        "description": "Develop user, developer, and API documentation for the platform.",
+        "details": "Create user guides for the dashboard and Telegram interactions. Implement interactive tutorials for new users. Create developer documentation for API endpoints. Implement OpenAPI/Swagger specifications for APIs. Create internal documentation for system architecture. Implement documentation versioning. Create a documentation search system. Implement feedback collection for documentation improvement. Create video tutorials for complex features.",
+        "testStrategy": "Test documentation accuracy with user testing. Verify API documentation matches implementation. Test interactive tutorials. Validate documentation search functionality. Test documentation versioning.",
+        "priority": "low",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-07-09T06:40:48.769Z",
+      "updated": "2025-07-09T06:44:28.726Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

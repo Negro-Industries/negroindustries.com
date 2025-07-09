@@ -1,0 +1,11 @@
+# Task ID: 24
+# Title: Implement AI Agent System Architecture
+# Status: pending
+# Dependencies: 20, 23
+# Priority: high
+# Description: Design and implement the core architecture for the six AI agents with distinct personalities and responsibilities.
+# Details:
+Create a base Agent class with common functionality. Implement specific agent classes for each role (Project Chef, Code Scaffolder, etc.). Define agent personalities, voices, and responsibilities in configuration. Create an agent factory for instantiating appropriate agents. Implement agent state management using Supabase. Create an agent orchestration system for coordinating multi-agent workflows. Implement tool execution capabilities with appropriate permissions. Create agent activity logging system. Implement agent-to-agent communication channels. Create a human-in-the-loop approval system for critical actions. Implement error handling and recovery mechanisms.
+
+# Test Strategy:
+Test agent instantiation and configuration. Verify each agent performs its specific responsibilities correctly. Test multi-agent orchestration with complex workflows. Validate human approval system works as expected. Test error recovery mechanisms.

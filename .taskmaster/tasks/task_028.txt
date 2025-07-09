@@ -1,0 +1,11 @@
+# Task ID: 28
+# Title: Implement Human-in-the-Loop Approval System
+# Status: pending
+# Dependencies: 22, 24, 27
+# Priority: medium
+# Description: Create a system for AI agents to pause and wait for user approval before executing critical actions.
+# Details:
+Define critical actions requiring human approval (repository creation, deployment, posting). Implement approval request generation in agent workflows. Create approval UI components for Telegram and dashboard. Implement approval state tracking in the database. Create notification system for pending approvals. Implement timeout handling for approvals. Create approval history and audit logging. Implement approval delegation for team scenarios if needed. Create approval analytics for tracking response times and patterns.
+
+# Test Strategy:
+Test approval requests in various workflows. Verify approval UI works correctly in both Telegram and dashboard. Test timeout handling. Validate approval history and audit logging. Test notification system for pending approvals.
