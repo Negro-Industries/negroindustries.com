@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bun --bun run next dev --turbopack",
+    "dev": "bun --bun run next dev --turbopack --port 4000",
     "build": "bun --bun run next build",
     "start": "bun --bun run next start",
     "lint": "bun --bun run next lint",

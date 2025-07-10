@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Script to set up local environment variables for Opportunity Radar
+# Script to set up local environment variables for ortunity Radar
 
-echo "Setting up local environment for Opportunity Radar..."
+echo "Setting up local environment for Negro Industries..."
 
 # Check if .env.local already exists
 if [ -f ".env.local" ]; then
@@ -21,7 +21,7 @@ echo "✅ Created .env.local from config/env.example"
 echo ""
 echo "📝 Next steps:"
 echo "1. Edit .env.local and update the following:"
-echo "   - Keep NEXT_PUBLIC_SERVER_URL=http://localhost:3000 for local development"
+echo "   - Keep NEXT_PUBLIC_SERVER_URL=http://localhost:4000 for local development"
 echo "   - Add your Supabase credentials (local or remote)"
 echo "   - Add OAuth provider credentials if using social login"
 echo ""
