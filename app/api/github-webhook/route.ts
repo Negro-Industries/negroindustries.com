@@ -154,16 +154,19 @@ export async function POST(request: NextRequest) {
     );
 
     if (diff) {
-      console.log("📄 Generating AI summary for changelog diff");
-      const summary = await generateChangelogSummary(
+      console.log("📄 Generating comprehensive content for changelog diff");
+      const content = await generateChangelogContent(
         diff,
         repoFullName,
         latestCommit.id,
         latestCommit.message,
       );
 
-      console.log("📤 Sending Telegram notification");
-      await sendTelegramNotification(summary);
+      console.log("📤 Sending comprehensive Telegram notification");
+      await sendComprehensiveNotification(content);
+
+      console.log("💾 Storing generated content for web access");
+      await storeGeneratedContent(repoFullName, content);
 
       console.log("💾 Updating repository config with latest commit SHA");
       await updateRepositoryConfig(
@@ -272,38 +275,85 @@ async function getChangelogDiff(
   }
 }
 
-async function generateChangelogSummary(
+interface ContentGeneration {
+  blogPost: {
+    title: string;
+    description: string;
+    body: string;
+    tags: string[];
+  };
+  socialMedia: {
+    twitter: string;
+    linkedin: string;
+    facebook: string;
+  };
+  telegramSummary: string;
+}
+
+async function generateChangelogContent(
   diff: string,
   repoName: string,
   commitSha?: string,
   commitMessage?: string,
-): Promise<string> {
+): Promise<ContentGeneration> {
   try {
     const groq = createGroq({
       apiKey: process.env.GROQ_API_KEY!,
     });
 
+    // Generate comprehensive content
     const { text } = await generateText({
       model: groq("meta-llama/llama-4-maverick-17b-128e-instruct"),
       prompt: `
-        Analyze the following CHANGELOG.md diff from the repository "${repoName}" and provide a concise, human-readable summary of the changes.
+        Analyze the following CHANGELOG.md diff from the repository "${repoName}" and generate comprehensive content for multiple platforms.
+
+        Create content that includes:
+        1. A blog post with engaging title, SEO description, detailed body, and relevant tags
+        2. Social media posts optimized for Twitter/X, LinkedIn, and Facebook
+        3. A concise Telegram summary
 
         Focus on:
         - New features added
-        - Bug fixes
-        - Breaking changes
-        - Important updates or improvements
-        - Version changes if mentioned
+        - Bug fixes and improvements
+        - Breaking changes (if any)
+        - Version updates
+        - Developer impact and benefits
 
-        Keep the summary under 200 words and use clear, non-technical language when possible.
-        Format your response as bullet points if multiple changes are detected.
+        Repository context: ${repoName}
+        ${commitMessage ? `Commit message: ${commitMessage}` : ""}
+
+        Please respond in this exact JSON format:
+        {
+          "blogPost": {
+            "title": "Engaging blog post title (60-70 characters)",
+            "description": "SEO-friendly meta description (150-160 characters)",
+            "body": "Detailed blog post body in markdown format (300-500 words)",
+            "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+          },
+          "socialMedia": {
+            "twitter": "Twitter/X post with hashtags (under 280 characters)",
+            "linkedin": "Professional LinkedIn post (under 1300 characters)",
+            "facebook": "Engaging Facebook business page post (under 500 characters)"
+          }
+        }
 
         Diff:
         ${diff}
       `,
-      maxTokens: 300,
+      maxTokens: 1500,
     });
 
+    // Parse the AI response
+    let parsedContent;
+    try {
+      parsedContent = JSON.parse(text);
+    } catch (parseError) {
+      console.error("Failed to parse AI response as JSON:", parseError);
+      // Fallback to simple content
+      parsedContent = generateFallbackContent(repoName);
+    }
+
+    // Generate Telegram summary
     const timestamp = new Date().toLocaleString("en-US", {
       timeZone: "UTC",
       year: "numeric",
@@ -318,33 +368,147 @@ async function generateChangelogSummary(
     const changelogUrl = `${repoUrl}/blob/main/CHANGELOG.md`;
     const commitUrl = commitSha ? `${repoUrl}/commit/${commitSha}` : null;
 
-    let notification = `🔄 *CHANGELOG Update*\n\n`;
-    notification += `📁 *Repository:* [${repoName}](${repoUrl})\n`;
-    notification += `📄 *File:* [CHANGELOG.md](${changelogUrl})\n`;
-    notification += `⏰ *Updated:* ${timestamp}\n`;
+    let telegramSummary = `🔄 *CHANGELOG Update*\n\n`;
+    telegramSummary += `📁 *Repository:* [${repoName}](${repoUrl})\n`;
+    telegramSummary += `📄 *File:* [CHANGELOG.md](${changelogUrl})\n`;
+    telegramSummary += `⏰ *Updated:* ${timestamp}\n`;
 
     if (commitSha) {
-      notification += `🔗 *Commit:* [${
+      telegramSummary += `🔗 *Commit:* [${
         commitSha.substring(0, 7)
       }](${commitUrl})\n`;
     }
 
     if (commitMessage) {
-      notification += `💬 *Message:* ${commitMessage}\n`;
+      telegramSummary += `💬 *Message:* ${commitMessage}\n`;
     }
 
-    notification += `\n📝 *Summary:*\n${text}\n\n`;
-    notification +=
-      `🔍 [View Full Changelog](${changelogUrl}) | [View Repository](${repoUrl})`;
+    telegramSummary +=
+      `\n📝 *Blog Post Generated:* ${parsedContent.blogPost.title}\n`;
+    telegramSummary +=
+      `🔗 *Social Media Posts:* Ready for Twitter, LinkedIn & Facebook\n\n`;
+    telegramSummary +=
+      `📊 *Content Summary:*\n${parsedContent.blogPost.description}\n\n`;
+    telegramSummary += `🏷️ *Tags:* ${
+      parsedContent.blogPost.tags.join(", ")
+    }\n\n`;
+    telegramSummary +=
+      `🔍 [View Changelog](${changelogUrl}) | [View Repository](${repoUrl})`;
 
-    return notification;
+    return {
+      blogPost: parsedContent.blogPost,
+      socialMedia: parsedContent.socialMedia,
+      telegramSummary,
+    };
   } catch (error) {
-    console.error("Error generating AI summary:", error);
+    console.error("Error generating content:", error);
     const repoUrl = `https://github.com/${repoName}`;
     const changelogUrl = `${repoUrl}/blob/main/CHANGELOG.md`;
 
-    return `🔄 *CHANGELOG Update*\n\n📁 *Repository:* [${repoName}](${repoUrl})\n📄 *File:* [CHANGELOG.md](${changelogUrl})\n\n❌ Could not generate AI summary. Please check the repository for details.\n\n🔍 [View Changelog](${changelogUrl})`;
+    const fallbackContent = generateFallbackContent(repoName);
+    return {
+      blogPost: fallbackContent.blogPost,
+      socialMedia: fallbackContent.socialMedia,
+      telegramSummary:
+        `🔄 *CHANGELOG Update*\n\n📁 *Repository:* [${repoName}](${repoUrl})\n📄 *File:* [CHANGELOG.md](${changelogUrl})\n\n❌ Could not generate content. Please check the repository for details.\n\n🔍 [View Changelog](${changelogUrl})`,
+    };
   }
+}
+
+function generateFallbackContent(repoName: string) {
+  const repoUrl = `https://github.com/${repoName}`;
+  const projectName = repoName.split("/")[1] || repoName;
+
+  return {
+    blogPost: {
+      title: `${projectName} Update: Latest Changes and Improvements`,
+      description:
+        `Discover the latest updates, bug fixes, and new features in ${projectName}. Stay up-to-date with our development progress.`,
+      body:
+        `# ${projectName} Update: Latest Changes and Improvements\n\nWe've just released new updates to ${projectName}! Our development team has been working hard to bring you improvements and new features.\n\n## What's New\n\nOur latest changelog includes various updates that enhance the user experience and improve functionality. Check out the [full changelog](${repoUrl}/blob/main/CHANGELOG.md) for detailed information.\n\n## Stay Updated\n\nWe're committed to continuous improvement and regularly update our projects. Follow our [GitHub repository](${repoUrl}) to stay informed about the latest developments.\n\n---\n\n*Want to contribute? Check out our repository and join our growing community of developers!*`,
+      tags: ["development", "update", "changelog", "software", "github"],
+    },
+    socialMedia: {
+      twitter:
+        `🚀 Just pushed new updates to ${projectName}! Check out the latest improvements and features. #development #coding #opensource ${repoUrl}`,
+      linkedin:
+        `Exciting news! We've just released new updates to ${projectName}. Our team has been working diligently to enhance functionality and user experience. These updates represent our commitment to continuous improvement and innovation. Check out the full details in our changelog and see how these improvements can benefit your projects. ${repoUrl}`,
+      facebook:
+        `🎉 New updates are live for ${projectName}! Our development team has implemented several improvements and new features. Visit our GitHub repository to explore the changes and see how they can enhance your experience. We're always working to make our tools better for our community! ${repoUrl}`,
+    },
+  };
+}
+
+async function sendComprehensiveNotification(
+  content: ContentGeneration,
+): Promise<void> {
+  // Send the Telegram summary
+  await sendTelegramNotification(content.telegramSummary);
+
+  // Format and send the comprehensive content
+  const comprehensiveMessage = formatComprehensiveContent(content);
+  await sendTelegramNotification(comprehensiveMessage);
+}
+
+async function storeGeneratedContent(
+  repository: string,
+  content: ContentGeneration,
+): Promise<void> {
+  try {
+    const response = await fetch(
+      `${
+        process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+      }/api/content`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          repository,
+          blogPost: content.blogPost,
+          socialMedia: content.socialMedia,
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      console.error("Failed to store content:", await response.text());
+    } else {
+      console.log("✅ Content stored successfully");
+    }
+  } catch (error) {
+    console.error("❌ Error storing content:", error);
+  }
+}
+
+function formatComprehensiveContent(content: ContentGeneration): string {
+  let message = `📝 *COMPREHENSIVE CONTENT GENERATED*\n\n`;
+
+  // Blog Post Section
+  message += `🌐 *BLOG POST*\n`;
+  message += `📰 *Title:* ${content.blogPost.title}\n`;
+  message += `📋 *Description:* ${content.blogPost.description}\n`;
+  message += `🏷️ *Tags:* ${content.blogPost.tags.join(", ")}\n\n`;
+  message += `📄 *Body:*\n\`\`\`\n${content.blogPost.body.substring(0, 500)}${
+    content.blogPost.body.length > 500 ? "..." : ""
+  }\n\`\`\`\n\n`;
+
+  // Social Media Section
+  message += `📱 *SOCIAL MEDIA POSTS*\n\n`;
+
+  message +=
+    `🐦 *Twitter/X:*\n\`\`\`\n${content.socialMedia.twitter}\n\`\`\`\n\n`;
+
+  message +=
+    `💼 *LinkedIn:*\n\`\`\`\n${content.socialMedia.linkedin}\n\`\`\`\n\n`;
+
+  message +=
+    `📘 *Facebook:*\n\`\`\`\n${content.socialMedia.facebook}\n\`\`\`\n\n`;
+
+  message += `✨ *Ready to copy and paste!*`;
+
+  return message;
 }
 
 async function sendTelegramNotification(message: string): Promise<void> {

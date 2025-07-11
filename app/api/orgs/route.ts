@@ -1,28 +1,28 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import { getOrganizationConfig } from "@/lib/storage/github-monitor";
 
-interface OrganizationConfig {
-  name: string;
-  enabled: boolean;
-  includePrivate: boolean;
-  excludeRepos: string[];
-  lastSyncTime?: string;
-}
-
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const orgs = await listAllOrganizations();
-    return NextResponse.json(orgs, {
-      headers: { 'Content-Type': 'application/json' },
+    // For now, return an empty array since we need to implement the storage layer
+    // This would normally fetch from your database/storage
+    const organizations = await getAllOrganizations();
+
+    return NextResponse.json({
+      organizations,
+      message: "Organizations retrieved successfully",
     });
   } catch (error) {
-    console.error('Error listing organizations:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Error fetching organizations:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch organizations" },
+      { status: 500 },
+    );
   }
 }
 
-// Storage function - implement based on your storage solution
-async function listAllOrganizations(): Promise<OrganizationConfig[]> {
-  // Implement your storage logic here
-  // This could be a database query, Redis scan, etc.
+// This would be implemented in your storage layer
+async function getAllOrganizations() {
+  // TODO: Implement actual storage retrieval
+  // For now, return empty array - you'll need to implement this based on your storage solution
   return [];
-} 
+}

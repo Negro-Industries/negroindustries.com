@@ -21,6 +21,9 @@ GROQ_API_KEY=gsk_your_groq_api_key_here
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+
+# Site URL (for content storage)
+NEXT_PUBLIC_SITE_URL=https://negroindustries.com
 ```
 
 ## Step-by-Step Setup
