@@ -1,143 +1,77 @@
 'use client';
 
-import { AgentMonitorCard } from '@/components/agent-monitor-card';
-import { SystemStatsPanel } from '@/components/system-stats-panel';
-import { ActionPanel } from '@/components/action-panel';
-import { TerminalLogFeed } from '@/components/terminal-log-feed';
+import { ContentViewer } from '@/components/content-viewer';
 import { useState, useEffect } from 'react';
 
-// Mock data for demonstration
-const mockAgents = [
-  {
-    agentName: 'BADG3R',
-    taskDescription: 'CRACKING THE MATRIX... BYPASSING FIREWALL PROTOCOLS',
-    progress: 87,
-    eta: '02:34:12',
-    status: 'active' as const,
-  },
-  {
-    agentName: 'CYPH3R',
-    taskDescription: 'EXTRACTING DATABASE SCHEMAS... ANALYZING VULNERABILITIES',
-    progress: 45,
-    eta: '05:12:45',
-    status: 'active' as const,
-  },
-  {
-    agentName: 'N3UR0',
-    taskDescription: 'NEURAL NETWORK TRAINING COMPLETE... STANDING BY',
-    progress: 100,
-    eta: '00:00:00',
-    status: 'complete' as const,
-  },
-];
+interface AgentActivity {
+  id: string;
+  repository_full_name: string;
+  blog_title: string;
+  generation_timestamp: string;
+  commit_sha?: string;
+  commit_message?: string;
+  generation_model?: string;
+}
 
-const mockLogs = [
-  {
-    id: '1',
-    timestamp: '23:42:15',
-    agent: 'BADG3R',
-    message: 'INITIATED DEEP SCAN ON TARGET SYSTEM... STEALTH MODE ENGAGED',
-    type: 'info' as const,
-  },
-  {
-    id: '2',
-    timestamp: '23:42:18',
-    agent: 'SYSTEM',
-    message: 'FIREWALL BREACH DETECTED... REROUTING THROUGH PROXY CHAIN',
-    type: 'warning' as const,
-  },
-  {
-    id: '3',
-    timestamp: '23:42:22',
-    agent: 'CYPH3R',
-    message: 'SQL INJECTION SUCCESSFUL... DUMPING USER CREDENTIALS',
-    type: 'success' as const,
-  },
-  {
-    id: '4',
-    timestamp: '23:42:25',
-    agent: 'N3UR0',
-    message: 'MACHINE LEARNING MODEL UPDATED... ACCURACY: 99.7%',
-    type: 'success' as const,
-  },
-  {
-    id: '5',
-    timestamp: '23:42:28',
-    agent: 'SYSTEM',
-    message: 'INTRUSION DETECTION SYSTEM BYPASSED... MAINTAINING GHOST PROFILE',
-    type: 'info' as const,
-  },
-  {
-    id: '6',
-    timestamp: '23:42:31',
-    agent: 'BADG3R',
-    message: 'PAYLOAD DEPLOYED... ESTABLISHING BACKDOOR CONNECTION',
-    type: 'success' as const,
-  },
-];
+interface DashboardStats {
+  totalContent: number;
+  repositories: number;
+  recentActivity: number;
+  activeAgents: number;
+}
 
 export default function DashboardPage() {
-  const [logs, setLogs] = useState(mockLogs);
-  const [systemStats, setSystemStats] = useState({
-    transferSpeed: '36GB/s',
-    activeTasks: 12,
-    completedTasks: 8,
-    totalTasks: 25,
-    uptime: '72h 14m 33s',
-    cpuUsage: 67,
-    memoryUsage: 43,
+  const [recentActivity, setRecentActivity] = useState<AgentActivity[]>([]);
+  const [stats, setStats] = useState<DashboardStats>({
+    totalContent: 0,
+    repositories: 0,
+    recentActivity: 0,
+    activeAgents: 6, // Our 6 AI agents
   });
+  const [loading, setLoading] = useState(true);
 
-  // Simulate real-time log updates
   useEffect(() => {
-    const interval = setInterval(() => {
-      const newLog = {
-        id: Date.now().toString(),
-        timestamp: new Date().toLocaleTimeString('en-US', { hour12: false }),
-        agent: ['BADG3R', 'CYPH3R', 'N3UR0', 'SYSTEM'][
-          Math.floor(Math.random() * 4)
-        ],
-        message: [
-          'SCANNING NETWORK TOPOLOGY... MAPPING ATTACK VECTORS',
-          'CRYPTOGRAPHIC HASH CRACKED... ACCESSING ENCRYPTED FILES',
-          'SOCIAL ENGINEERING PHASE COMPLETE... HARVESTING INTEL',
-          'ZERO-DAY EXPLOIT DEPLOYED... ESCALATING PRIVILEGES',
-          'PACKET SNIFFING INITIATED... INTERCEPTING COMMUNICATIONS',
-          'ROOTKIT INSTALLED... MAINTAINING PERSISTENT ACCESS',
-        ][Math.floor(Math.random() * 6)],
-        type: (['info', 'success', 'warning'] as const)[
-          Math.floor(Math.random() * 3)
-        ],
-      };
-
-      setLogs(prev => [...prev.slice(-10), newLog]);
-    }, 3000);
-
+    fetchDashboardData();
+    // Refresh data every 30 seconds
+    const interval = setInterval(fetchDashboardData, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // Simulate system stats updates
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSystemStats(prev => ({
-        ...prev,
-        cpuUsage: Math.max(
-          20,
-          Math.min(90, prev.cpuUsage + (Math.random() - 0.5) * 20)
-        ),
-        memoryUsage: Math.max(
-          10,
-          Math.min(80, prev.memoryUsage + (Math.random() - 0.5) * 15)
-        ),
-      }));
-    }, 5000);
+  const fetchDashboardData = async () => {
+    try {
+      const response = await fetch('/api/content?limit=10');
+      if (response.ok) {
+        const data = await response.json();
+        setRecentActivity(data.content || []);
+        setStats({
+          totalContent: data.stats?.total || 0,
+          repositories: data.stats?.repositories || 0,
+          recentActivity: data.stats?.recent || 0,
+          activeAgents: 6,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return () => clearInterval(interval);
-  }, []);
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString();
+  };
 
-  const handleAction = (action: string) => {
-    console.log(`Action triggered: ${action}`);
-    // Add your action handlers here
+  const getAgentName = (model?: string) => {
+    if (!model) return 'SYSTEM';
+    if (model.includes('llama')) return 'DOT MATRIX';
+    if (model.includes('groq')) return 'REPO ROCCO';
+    if (model.includes('claude')) return 'CHANGO';
+    return 'LOLA LINGO';
+  };
+
+  const getActivityType = (activity: AgentActivity) => {
+    if (activity.commit_sha) return 'CHANGELOG_ANALYSIS';
+    return 'CONTENT_GENERATION';
   };
 
   return (
@@ -146,62 +80,174 @@ export default function DashboardPage() {
       <div className='mb-8 text-center'>
         <pre className='font-mono text-xs neon-green leading-tight'>
           {`
-███╗   ███╗███████╗ ██████╗ ██████╗  ██████╗     ██╗███╗   ██╗██████╗ ██╗   ██╗███████╗████████╗██████╗ ██╗███████╗███████╗
-████╗ ████║██╔════╝██╔════╝ ██╔══██╗██╔═══██╗    ██║████╗  ██║██╔══██╗██║   ██║██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝██╔════╝
-██╔████╔██║█████╗  ██║  ███╗██████╔╝██║   ██║    ██║██╔██╗ ██║██║  ██║██║   ██║███████╗   ██║   ██████╔╝██║█████╗  ███████╗
-██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██╗██║   ██║    ██║██║╚██╗██║██║  ██║██║   ██║╚════██║   ██║   ██╔══██╗██║██╔══╝  ╚════██║
-██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║╚██████╔╝    ██║██║ ╚████║██████╔╝╚██████╔╝███████║   ██║   ██║  ██║██║███████╗███████║
-╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝     ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝╚══════╝
+███╗   ██╗███████╗ ██████╗ ██████╗  ██████╗     ██╗███╗   ██╗██████╗ ██╗   ██╗███████╗████████╗██████╗ ██╗███████╗███████╗
+████╗  ██║██╔════╝██╔════╝ ██╔══██╗██╔═══██╗    ██║████╗  ██║██╔══██╗██║   ██║██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝██╔════╝
+██╔██╗ ██║█████╗  ██║  ███╗██████╔╝██║   ██║    ██║██╔██╗ ██║██║  ██║██║   ██║███████╗   ██║   ██████╔╝██║█████╗  ███████╗
+██║╚██╗██║██╔══╝  ██║   ██║██╔══██╗██║   ██║    ██║██║╚██╗██║██║  ██║██║   ██║╚════██║   ██║   ██╔══██╗██║██╔══╝  ╚════██║
+██║ ╚████║███████╗╚██████╔╝██║  ██║╚██████╔╝    ██║██║ ╚████║██████╔╝╚██████╔╝███████║   ██║   ██║  ██║██║███████╗███████║
+╚═╝  ╚═══╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝     ╚═╝╚═╝  ╚═══╝╚═════╝  ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚══════╝╚══════╝
 `}
         </pre>
         <div className='mt-2 text-xs font-mono text-muted-foreground'>
-          UNDERGROUND HACKING COLLECTIVE • EST. 1998 • PHREAKING THE MATRIX
-          SINCE Y2K
+          AI CONTENT GENERATION PLATFORM • MICHELIN-STAR DIGITAL KITCHEN • LIVE
+          AGENT MONITORING
         </div>
       </div>
 
-      {/* Main Dashboard Grid */}
-      <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
-        {/* Agent Monitors */}
-        <div className='lg:col-span-2 space-y-6'>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            {mockAgents.map((agent, index) => (
-              <AgentMonitorCard
-                key={index}
-                agentName={agent.agentName}
-                taskDescription={agent.taskDescription}
-                progress={agent.progress}
-                eta={agent.eta}
-                status={agent.status}
-              />
-            ))}
+      {/* System Stats Panel */}
+      <div className='mb-6 bg-gray-900 border border-green-500 rounded-lg p-4'>
+        <h2 className='text-lg font-mono text-green-400 mb-4 flex items-center gap-2'>
+          ⚡ SYSTEM STATUS
+        </h2>
+        <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+          <div className='text-center'>
+            <div className='text-2xl font-mono text-green-400'>
+              {loading ? '...' : stats.totalContent}
+            </div>
+            <div className='text-xs text-gray-400'>CONTENT GENERATED</div>
           </div>
-
-          {/* Terminal Log Feed */}
-          <TerminalLogFeed logs={logs} />
+          <div className='text-center'>
+            <div className='text-2xl font-mono text-blue-400'>
+              {loading ? '...' : stats.repositories}
+            </div>
+            <div className='text-xs text-gray-400'>REPOSITORIES</div>
+          </div>
+          <div className='text-center'>
+            <div className='text-2xl font-mono text-yellow-400'>
+              {loading ? '...' : stats.recentActivity}
+            </div>
+            <div className='text-xs text-gray-400'>RECENT (7 DAYS)</div>
+          </div>
+          <div className='text-center'>
+            <div className='text-2xl font-mono text-purple-400'>
+              {stats.activeAgents}
+            </div>
+            <div className='text-xs text-gray-400'>ACTIVE AGENTS</div>
+          </div>
         </div>
+      </div>
 
-        {/* Sidebar */}
-        <div className='space-y-6'>
-          {/* System Stats */}
-          <SystemStatsPanel
-            transferSpeed={systemStats.transferSpeed}
-            activeTasks={systemStats.activeTasks}
-            completedTasks={systemStats.completedTasks}
-            totalTasks={systemStats.totalTasks}
-            uptime={systemStats.uptime}
-            cpuUsage={systemStats.cpuUsage}
-            memoryUsage={systemStats.memoryUsage}
-          />
-
-          {/* Action Panel */}
-          <ActionPanel
-            onCancel={() => handleAction('cancel')}
-            onPause={() => handleAction('pause')}
-            onClose={() => handleAction('close')}
-            onRestart={() => handleAction('restart')}
-          />
+      {/* Agent Activity Feed */}
+      <div className='mb-6 bg-gray-900 border border-green-500 rounded-lg p-4'>
+        <h2 className='text-lg font-mono text-green-400 mb-4 flex items-center gap-2'>
+          📡 LIVE AGENT ACTIVITY
+        </h2>
+        <div className='space-y-2 max-h-64 overflow-y-auto'>
+          {loading ? (
+            <div className='text-center text-gray-400 py-8'>
+              <div className='animate-pulse'>LOADING AGENT ACTIVITY...</div>
+            </div>
+          ) : recentActivity.length === 0 ? (
+            <div className='text-center text-gray-400 py-8'>
+              <div>NO RECENT ACTIVITY</div>
+              <div className='text-xs mt-2'>
+                Agents are standing by for new commits...
+              </div>
+            </div>
+          ) : (
+            recentActivity.map((activity, index) => (
+              <div
+                key={activity.id}
+                className='flex items-center justify-between bg-gray-800 p-3 rounded border border-gray-700'
+              >
+                <div className='flex-1'>
+                  <div className='flex items-center gap-4 text-sm'>
+                    <span className='font-mono text-green-400'>
+                      {getAgentName(activity.generation_model)}
+                    </span>
+                    <span className='text-blue-400'>
+                      {getActivityType(activity)}
+                    </span>
+                    <span className='text-gray-400'>
+                      📁 {activity.repository_full_name}
+                    </span>
+                  </div>
+                  <div className='text-xs text-gray-500 mt-1'>
+                    📝 {activity.blog_title}
+                  </div>
+                  {activity.commit_sha && (
+                    <div className='text-xs text-gray-500 mt-1'>
+                      🔗 {activity.commit_sha.substring(0, 7)} •{' '}
+                      {activity.commit_message}
+                    </div>
+                  )}
+                </div>
+                <div className='text-xs text-gray-400 font-mono'>
+                  {formatDate(activity.generation_timestamp)}
+                </div>
+              </div>
+            ))
+          )}
         </div>
+      </div>
+
+      {/* Agent Team Status */}
+      <div className='mb-6 bg-gray-900 border border-green-500 rounded-lg p-4'>
+        <h2 className='text-lg font-mono text-green-400 mb-4 flex items-center gap-2'>
+          👥 AGENT TEAM STATUS
+        </h2>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+          {[
+            {
+              name: 'DOT MATRIX',
+              role: 'Project Chef',
+              status: 'READY',
+              specialty: 'PRD Analysis',
+            },
+            {
+              name: 'REPO ROCCO',
+              role: 'Code Scaffolder',
+              status: 'READY',
+              specialty: 'Repository Setup',
+            },
+            {
+              name: 'CHANGO',
+              role: 'Hype Machine',
+              status: 'READY',
+              specialty: 'Social Media',
+            },
+            {
+              name: 'LOLA LINGO',
+              role: 'Storyteller',
+              status: 'READY',
+              specialty: 'Content Creation',
+            },
+            {
+              name: 'STACK JACK',
+              role: 'Infra Boss',
+              status: 'READY',
+              specialty: 'Deployment',
+            },
+            {
+              name: 'BOSS LADY',
+              role: 'Payment Closer',
+              status: 'READY',
+              specialty: 'Billing & Upgrades',
+            },
+          ].map((agent, index) => (
+            <div
+              key={index}
+              className='bg-gray-800 p-3 rounded border border-gray-700'
+            >
+              <div className='flex items-center justify-between mb-2'>
+                <span className='font-mono text-green-400 text-sm'>
+                  {agent.name}
+                </span>
+                <span className='text-xs text-green-400'>● {agent.status}</span>
+              </div>
+              <div className='text-xs text-gray-400'>{agent.role}</div>
+              <div className='text-xs text-gray-500'>{agent.specialty}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Generated Content Viewer */}
+      <div className='bg-gray-900 border border-green-500 rounded-lg p-4'>
+        <h2 className='text-lg font-mono text-green-400 mb-4 flex items-center gap-2'>
+          📄 GENERATED CONTENT ARCHIVE
+        </h2>
+        <ContentViewer />
       </div>
 
       {/* Footer */}
@@ -209,12 +255,12 @@ export default function DashboardPage() {
         <div className='text-xs font-mono text-muted-foreground'>
           ┌─────────────────────────────────────────────────────────────────────────┐
           <br />
-          │ ACCESSING SECURE TERMINAL... CONNECTION ESTABLISHED VIA ENCRYPTED
-          PROXY │
+          │ NEGRO INDUSTRIES AI ORCHESTRATION PLATFORM • REAL-TIME MONITORING │
           <br />
-          │ WARNING: UNAUTHORIZED ACCESS IS PROHIBITED BY FEDERAL LAW │
+          │ ALL AGENT ACTIVITIES ARE LOGGED AND MONITORED FOR QUALITY ASSURANCE
+          │
           <br />
-          │ ALL ACTIVITIES ARE MONITORED AND LOGGED FOR SECURITY PURPOSES │
+          │ TRANSPARENT AI WORKFLOWS • HUMAN-IN-THE-LOOP APPROVAL SYSTEM │
           <br />
           └─────────────────────────────────────────────────────────────────────────┘
         </div>

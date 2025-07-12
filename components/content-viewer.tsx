@@ -62,17 +62,31 @@ export function ContentViewer() {
   };
 
   if (loading) {
-    return <div className='animate-pulse bg-gray-200 h-96 rounded-lg' />;
+    return (
+      <div className='text-center py-12'>
+        <div className='animate-pulse text-green-400 font-mono text-lg'>
+          ⚡ SCANNING CONTENT DATABASE...
+        </div>
+        <div className='text-xs text-gray-500 mt-2 font-mono'>
+          Analyzing AI-generated content...
+        </div>
+      </div>
+    );
   }
 
   if (content.length === 0) {
     return (
-      <div className='text-center py-12'>
-        <p className='text-gray-500 text-lg mb-4'>No content generated yet.</p>
-        <p className='text-gray-400'>
+      <div className='text-center py-12 bg-gray-800 rounded-lg border border-gray-700'>
+        <div className='text-green-400 font-mono text-lg mb-4'>
+          📭 NO CONTENT DETECTED
+        </div>
+        <div className='text-gray-400 font-mono text-sm mb-2'>
+          Agents are standing by for new changelog updates...
+        </div>
+        <div className='text-gray-500 font-mono text-xs'>
           Make a commit with CHANGELOG.md changes to a monitored repository to
           generate content.
-        </p>
+        </div>
       </div>
     );
   }
@@ -81,26 +95,32 @@ export function ContentViewer() {
     <div className='space-y-6'>
       {/* Stats Section */}
       {stats && !selectedContent && (
-        <div className='bg-white p-6 rounded-lg border border-gray-200'>
-          <h2 className='text-lg font-semibold mb-4'>📊 Content Statistics</h2>
+        <div className='bg-gray-800 p-6 rounded-lg border border-gray-700'>
+          <h2 className='text-lg font-mono text-green-400 mb-4 flex items-center gap-2'>
+            📊 CONTENT STATISTICS
+          </h2>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-blue-600'>
+            <div className='text-center bg-gray-900 p-4 rounded border border-gray-600'>
+              <div className='text-2xl font-mono text-blue-400'>
                 {stats.total}
               </div>
-              <div className='text-sm text-gray-500'>Total Generated</div>
+              <div className='text-xs text-gray-400 font-mono'>
+                TOTAL GENERATED
+              </div>
             </div>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-green-600'>
+            <div className='text-center bg-gray-900 p-4 rounded border border-gray-600'>
+              <div className='text-2xl font-mono text-green-400'>
                 {stats.repositories}
               </div>
-              <div className='text-sm text-gray-500'>Repositories</div>
+              <div className='text-xs text-gray-400 font-mono'>
+                REPOSITORIES
+              </div>
             </div>
-            <div className='text-center'>
-              <div className='text-2xl font-bold text-purple-600'>
+            <div className='text-center bg-gray-900 p-4 rounded border border-gray-600'>
+              <div className='text-2xl font-mono text-purple-400'>
                 {stats.recent}
               </div>
-              <div className='text-sm text-gray-500'>Last 7 Days</div>
+              <div className='text-xs text-gray-400 font-mono'>LAST 7 DAYS</div>
             </div>
           </div>
         </div>
@@ -112,18 +132,18 @@ export function ContentViewer() {
           {content.map(entry => (
             <div
               key={entry.id}
-              className='bg-white p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow cursor-pointer'
+              className='bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-green-500 transition-colors cursor-pointer'
               onClick={() => setSelectedContent(entry)}
             >
               <div className='flex items-start justify-between'>
                 <div className='flex-1'>
-                  <h3 className='font-semibold text-lg text-gray-900 mb-2'>
-                    {entry.blog_title}
+                  <h3 className='font-mono text-lg text-green-400 mb-2'>
+                    📄 {entry.blog_title}
                   </h3>
-                  <p className='text-gray-600 mb-3 line-clamp-2'>
+                  <p className='text-gray-300 mb-3 line-clamp-2 font-mono text-sm'>
                     {entry.blog_description}
                   </p>
-                  <div className='flex items-center gap-4 text-sm text-gray-500 mb-2'>
+                  <div className='flex items-center gap-4 text-xs text-gray-400 mb-2 font-mono'>
                     <span>📁 {entry.repository_full_name}</span>
                     <span>
                       🕒{' '}
@@ -134,7 +154,7 @@ export function ContentViewer() {
                     <span>🏷️ {entry.blog_tags.length} tags</span>
                   </div>
                   {entry.commit_sha && (
-                    <div className='flex items-center gap-4 text-sm text-gray-400'>
+                    <div className='flex items-center gap-4 text-xs text-gray-500 font-mono'>
                       <span>🔗 {entry.commit_sha.substring(0, 7)}</span>
                       {entry.commit_message && (
                         <span className='truncate max-w-md'>
@@ -144,8 +164,12 @@ export function ContentViewer() {
                     </div>
                   )}
                 </div>
-                <Button variant='outline' size='sm'>
-                  View Content →
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono'
+                >
+                  VIEW CONTENT →
                 </Button>
               </div>
             </div>
@@ -157,10 +181,14 @@ export function ContentViewer() {
       {selectedContent && (
         <div className='space-y-6'>
           <div className='flex items-center gap-4'>
-            <Button variant='outline' onClick={() => setSelectedContent(null)}>
-              ← Back to List
+            <Button
+              variant='outline'
+              onClick={() => setSelectedContent(null)}
+              className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono'
+            >
+              ← BACK TO LIST
             </Button>
-            <div className='text-sm text-gray-500'>
+            <div className='text-sm text-gray-400 font-mono'>
               📁 {selectedContent.repository_full_name} • 🕒{' '}
               {formatDate(
                 selectedContent.generation_timestamp ||
@@ -175,25 +203,31 @@ export function ContentViewer() {
 
           {/* Commit Information */}
           {selectedContent.commit_sha && (
-            <div className='bg-gray-50 p-4 rounded-lg border border-gray-200'>
-              <h3 className='font-medium text-gray-900 mb-2'>
-                🔗 Commit Information
+            <div className='bg-gray-800 p-4 rounded-lg border border-gray-700'>
+              <h3 className='font-mono text-green-400 mb-2 flex items-center gap-2'>
+                🔗 COMMIT INFORMATION
               </h3>
-              <div className='space-y-2 text-sm'>
-                <div>
-                  <span className='font-medium'>SHA:</span>{' '}
-                  {selectedContent.commit_sha}
+              <div className='space-y-2 text-sm font-mono'>
+                <div className='text-gray-300'>
+                  <span className='text-blue-400'>SHA:</span>{' '}
+                  <span className='text-yellow-400'>
+                    {selectedContent.commit_sha}
+                  </span>
                 </div>
                 {selectedContent.commit_message && (
-                  <div>
-                    <span className='font-medium'>Message:</span>{' '}
-                    {selectedContent.commit_message}
+                  <div className='text-gray-300'>
+                    <span className='text-blue-400'>Message:</span>{' '}
+                    <span className='text-gray-200'>
+                      {selectedContent.commit_message}
+                    </span>
                   </div>
                 )}
                 {selectedContent.generation_model && (
-                  <div>
-                    <span className='font-medium'>Generated by:</span>{' '}
-                    {selectedContent.generation_model}
+                  <div className='text-gray-300'>
+                    <span className='text-blue-400'>Generated by:</span>{' '}
+                    <span className='text-purple-400'>
+                      {selectedContent.generation_model}
+                    </span>
                   </div>
                 )}
               </div>
@@ -201,16 +235,16 @@ export function ContentViewer() {
           )}
 
           {/* Blog Post Section */}
-          <div className='bg-white p-6 rounded-lg border border-gray-200'>
-            <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-              🌐 Blog Post
+          <div className='bg-gray-800 p-6 rounded-lg border border-gray-700'>
+            <h2 className='text-xl font-mono text-green-400 mb-4 flex items-center gap-2'>
+              🌐 BLOG POST CONTENT
             </h2>
 
             <div className='space-y-4'>
               <div>
                 <div className='flex items-center justify-between mb-2'>
-                  <label className='text-sm font-medium text-gray-700'>
-                    Title
+                  <label className='text-sm font-mono text-blue-400'>
+                    TITLE
                   </label>
                   <Button
                     variant='outline'
@@ -218,19 +252,20 @@ export function ContentViewer() {
                     onClick={() =>
                       copyToClipboard(selectedContent.blog_title, 'blog-title')
                     }
+                    className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono text-xs'
                   >
-                    {copiedField === 'blog-title' ? 'Copied!' : 'Copy'}
+                    {copiedField === 'blog-title' ? 'COPIED!' : 'COPY'}
                   </Button>
                 </div>
-                <div className='bg-gray-50 p-3 rounded border text-sm'>
+                <div className='bg-gray-900 p-3 rounded border border-gray-600 text-sm font-mono text-gray-200'>
                   {selectedContent.blog_title}
                 </div>
               </div>
 
               <div>
                 <div className='flex items-center justify-between mb-2'>
-                  <label className='text-sm font-medium text-gray-700'>
-                    Meta Description
+                  <label className='text-sm font-mono text-blue-400'>
+                    META DESCRIPTION
                   </label>
                   <Button
                     variant='outline'
@@ -241,19 +276,20 @@ export function ContentViewer() {
                         'blog-description'
                       )
                     }
+                    className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono text-xs'
                   >
-                    {copiedField === 'blog-description' ? 'Copied!' : 'Copy'}
+                    {copiedField === 'blog-description' ? 'COPIED!' : 'COPY'}
                   </Button>
                 </div>
-                <div className='bg-gray-50 p-3 rounded border text-sm'>
+                <div className='bg-gray-900 p-3 rounded border border-gray-600 text-sm font-mono text-gray-200'>
                   {selectedContent.blog_description}
                 </div>
               </div>
 
               <div>
                 <div className='flex items-center justify-between mb-2'>
-                  <label className='text-sm font-medium text-gray-700'>
-                    Tags
+                  <label className='text-sm font-mono text-blue-400'>
+                    TAGS
                   </label>
                   <Button
                     variant='outline'
@@ -264,19 +300,20 @@ export function ContentViewer() {
                         'blog-tags'
                       )
                     }
+                    className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono text-xs'
                   >
-                    {copiedField === 'blog-tags' ? 'Copied!' : 'Copy'}
+                    {copiedField === 'blog-tags' ? 'COPIED!' : 'COPY'}
                   </Button>
                 </div>
-                <div className='bg-gray-50 p-3 rounded border text-sm'>
+                <div className='bg-gray-900 p-3 rounded border border-gray-600 text-sm font-mono text-gray-200'>
                   {selectedContent.blog_tags.join(', ')}
                 </div>
               </div>
 
               <div>
                 <div className='flex items-center justify-between mb-2'>
-                  <label className='text-sm font-medium text-gray-700'>
-                    Body (Markdown)
+                  <label className='text-sm font-mono text-blue-400'>
+                    BODY (MARKDOWN)
                   </label>
                   <Button
                     variant='outline'
@@ -284,12 +321,13 @@ export function ContentViewer() {
                     onClick={() =>
                       copyToClipboard(selectedContent.blog_body, 'blog-body')
                     }
+                    className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono text-xs'
                   >
-                    {copiedField === 'blog-body' ? 'Copied!' : 'Copy'}
+                    {copiedField === 'blog-body' ? 'COPIED!' : 'COPY'}
                   </Button>
                 </div>
-                <div className='bg-gray-50 p-3 rounded border text-sm max-h-64 overflow-y-auto'>
-                  <pre className='whitespace-pre-wrap font-mono text-xs'>
+                <div className='bg-gray-900 p-3 rounded border border-gray-600 text-sm max-h-64 overflow-y-auto'>
+                  <pre className='whitespace-pre-wrap font-mono text-xs text-gray-200'>
                     {selectedContent.blog_body}
                   </pre>
                 </div>
@@ -298,18 +336,18 @@ export function ContentViewer() {
           </div>
 
           {/* Social Media Section */}
-          <div className='bg-white p-6 rounded-lg border border-gray-200'>
-            <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-              📱 Social Media Posts
+          <div className='bg-gray-800 p-6 rounded-lg border border-gray-700'>
+            <h2 className='text-xl font-mono text-green-400 mb-4 flex items-center gap-2'>
+              📱 SOCIAL MEDIA POSTS
             </h2>
 
             <div className='space-y-6'>
               {/* Twitter */}
               <div>
                 <div className='flex items-center justify-between mb-2'>
-                  <label className='text-sm font-medium text-gray-700 flex items-center gap-2'>
-                    🐦 Twitter/X
-                    <span className='text-xs text-gray-500'>
+                  <label className='text-sm font-mono text-blue-400 flex items-center gap-2'>
+                    🐦 TWITTER/X
+                    <span className='text-xs text-gray-400'>
                       ({selectedContent.twitter_content.length}/280 chars)
                     </span>
                   </label>
@@ -322,11 +360,12 @@ export function ContentViewer() {
                         'twitter'
                       )
                     }
+                    className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono text-xs'
                   >
-                    {copiedField === 'twitter' ? 'Copied!' : 'Copy'}
+                    {copiedField === 'twitter' ? 'COPIED!' : 'COPY'}
                   </Button>
                 </div>
-                <div className='bg-gray-50 p-3 rounded border text-sm'>
+                <div className='bg-gray-900 p-3 rounded border border-gray-600 text-sm font-mono text-gray-200'>
                   {selectedContent.twitter_content}
                 </div>
               </div>
@@ -334,9 +373,9 @@ export function ContentViewer() {
               {/* LinkedIn */}
               <div>
                 <div className='flex items-center justify-between mb-2'>
-                  <label className='text-sm font-medium text-gray-700 flex items-center gap-2'>
-                    💼 LinkedIn
-                    <span className='text-xs text-gray-500'>
+                  <label className='text-sm font-mono text-blue-400 flex items-center gap-2'>
+                    💼 LINKEDIN
+                    <span className='text-xs text-gray-400'>
                       ({selectedContent.linkedin_content.length}/1300 chars)
                     </span>
                   </label>
@@ -349,11 +388,12 @@ export function ContentViewer() {
                         'linkedin'
                       )
                     }
+                    className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono text-xs'
                   >
-                    {copiedField === 'linkedin' ? 'Copied!' : 'Copy'}
+                    {copiedField === 'linkedin' ? 'COPIED!' : 'COPY'}
                   </Button>
                 </div>
-                <div className='bg-gray-50 p-3 rounded border text-sm max-h-32 overflow-y-auto'>
+                <div className='bg-gray-900 p-3 rounded border border-gray-600 text-sm max-h-32 overflow-y-auto font-mono text-gray-200'>
                   {selectedContent.linkedin_content}
                 </div>
               </div>
@@ -361,9 +401,9 @@ export function ContentViewer() {
               {/* Facebook */}
               <div>
                 <div className='flex items-center justify-between mb-2'>
-                  <label className='text-sm font-medium text-gray-700 flex items-center gap-2'>
-                    📘 Facebook Business Page
-                    <span className='text-xs text-gray-500'>
+                  <label className='text-sm font-mono text-blue-400 flex items-center gap-2'>
+                    📘 FACEBOOK
+                    <span className='text-xs text-gray-400'>
                       ({selectedContent.facebook_content.length}/500 chars)
                     </span>
                   </label>
@@ -376,11 +416,12 @@ export function ContentViewer() {
                         'facebook'
                       )
                     }
+                    className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono text-xs'
                   >
-                    {copiedField === 'facebook' ? 'Copied!' : 'Copy'}
+                    {copiedField === 'facebook' ? 'COPIED!' : 'COPY'}
                   </Button>
                 </div>
-                <div className='bg-gray-50 p-3 rounded border text-sm'>
+                <div className='bg-gray-900 p-3 rounded border border-gray-600 text-sm font-mono text-gray-200'>
                   {selectedContent.facebook_content}
                 </div>
               </div>
@@ -389,13 +430,13 @@ export function ContentViewer() {
 
           {/* Telegram Summary Section */}
           {selectedContent.telegram_summary && (
-            <div className='bg-white p-6 rounded-lg border border-gray-200'>
-              <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                📢 Telegram Summary
+            <div className='bg-gray-800 p-6 rounded-lg border border-gray-700'>
+              <h2 className='text-xl font-mono text-green-400 mb-4 flex items-center gap-2'>
+                📢 TELEGRAM SUMMARY
               </h2>
               <div className='flex items-center justify-between mb-2'>
-                <label className='text-sm font-medium text-gray-700'>
-                  Generated Summary
+                <label className='text-sm font-mono text-blue-400'>
+                  GENERATED SUMMARY
                 </label>
                 <Button
                   variant='outline'
@@ -406,12 +447,13 @@ export function ContentViewer() {
                       'telegram-summary'
                     )
                   }
+                  className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono text-xs'
                 >
-                  {copiedField === 'telegram-summary' ? 'Copied!' : 'Copy'}
+                  {copiedField === 'telegram-summary' ? 'COPIED!' : 'COPY'}
                 </Button>
               </div>
-              <div className='bg-gray-50 p-3 rounded border text-sm max-h-48 overflow-y-auto'>
-                <pre className='whitespace-pre-wrap font-mono text-xs'>
+              <div className='bg-gray-900 p-3 rounded border border-gray-600 text-sm max-h-48 overflow-y-auto'>
+                <pre className='whitespace-pre-wrap font-mono text-xs text-gray-200'>
                   {selectedContent.telegram_summary}
                 </pre>
               </div>
@@ -420,13 +462,13 @@ export function ContentViewer() {
 
           {/* Source Diff Section */}
           {selectedContent.source_diff && (
-            <div className='bg-white p-6 rounded-lg border border-gray-200'>
-              <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
-                📋 Source Diff
+            <div className='bg-gray-800 p-6 rounded-lg border border-gray-700'>
+              <h2 className='text-xl font-mono text-green-400 mb-4 flex items-center gap-2'>
+                📋 SOURCE DIFF
               </h2>
               <div className='flex items-center justify-between mb-2'>
-                <label className='text-sm font-medium text-gray-700'>
-                  CHANGELOG.md Changes
+                <label className='text-sm font-mono text-blue-400'>
+                  CHANGELOG.MD CHANGES
                 </label>
                 <Button
                   variant='outline'
@@ -437,12 +479,13 @@ export function ContentViewer() {
                       'source-diff'
                     )
                   }
+                  className='bg-gray-700 border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-mono text-xs'
                 >
-                  {copiedField === 'source-diff' ? 'Copied!' : 'Copy'}
+                  {copiedField === 'source-diff' ? 'COPIED!' : 'COPY'}
                 </Button>
               </div>
-              <div className='bg-gray-50 p-3 rounded border text-sm max-h-48 overflow-y-auto'>
-                <pre className='whitespace-pre-wrap font-mono text-xs'>
+              <div className='bg-gray-900 p-3 rounded border border-gray-600 text-sm max-h-48 overflow-y-auto'>
+                <pre className='whitespace-pre-wrap font-mono text-xs text-gray-200'>
                   {selectedContent.source_diff}
                 </pre>
               </div>
@@ -450,8 +493,10 @@ export function ContentViewer() {
           )}
 
           {/* Quick Actions */}
-          <div className='bg-blue-50 p-4 rounded-lg border border-blue-200'>
-            <h3 className='font-medium text-blue-900 mb-2'>✨ Quick Actions</h3>
+          <div className='bg-blue-900 p-4 rounded-lg border border-blue-600'>
+            <h3 className='font-mono text-blue-400 mb-2 flex items-center gap-2'>
+              ⚡ QUICK ACTIONS
+            </h3>
             <div className='grid grid-cols-1 md:grid-cols-3 gap-3'>
               <Button
                 variant='outline'
@@ -463,9 +508,9 @@ export function ContentViewer() {
                     'full-blog'
                   )
                 }
-                className='text-left justify-start'
+                className='text-left justify-start bg-gray-700 border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-black font-mono text-xs'
               >
-                📄 Copy Full Blog Post
+                📄 COPY FULL BLOG POST
               </Button>
               <Button
                 variant='outline'
@@ -475,9 +520,9 @@ export function ContentViewer() {
                     'all-social'
                   )
                 }
-                className='text-left justify-start'
+                className='text-left justify-start bg-gray-700 border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-black font-mono text-xs'
               >
-                📱 Copy All Social Media
+                📱 COPY ALL SOCIAL MEDIA
               </Button>
               <Button
                 variant='outline'
@@ -487,9 +532,9 @@ export function ContentViewer() {
                     'just-tags'
                   )
                 }
-                className='text-left justify-start'
+                className='text-left justify-start bg-gray-700 border-blue-500 text-blue-400 hover:bg-blue-500 hover:text-black font-mono text-xs'
               >
-                🏷️ Copy Tags Only
+                🏷️ COPY TAGS ONLY
               </Button>
             </div>
           </div>
