@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
                     "Set up the following environment variables:",
                     "  - TELEGRAM_BOT_TOKEN",
                     "  - TELEGRAM_CHAT_ID",
-                    "  - GITHUB_TOKEN",
+                    "  - PERSONAL_GITHUB_TOKEN",
                     "  - GROQ_API_KEY",
                     "",
                     "Organization monitoring will automatically discover and monitor new repositories!",

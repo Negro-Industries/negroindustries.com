@@ -8,7 +8,7 @@ Copy these to your Vercel environment variables:
 
 ```bash
 # GitHub Configuration
-GITHUB_TOKEN=ghp_your_github_personal_access_token_here
+PERSONAL_GITHUB_TOKEN=ghp_your_github_personal_access_token_here
 
 # Telegram Bot Configuration  
 TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
@@ -53,7 +53,7 @@ NEXT_PUBLIC_SITE_URL=https://negroindustries.com
      - ✅ `admin:org` (Full control of orgs and teams)
      - ✅ `admin:repo_hook` (Repository hooks)
 
-2. **Copy Token**: Save immediately as `GITHUB_TOKEN`
+2. **Copy Token**: Save immediately as `PERSONAL_GITHUB_TOKEN`
 
 ### 3. Groq AI API Key
 
@@ -181,7 +181,7 @@ curl -X POST "https://api.telegram.org/bot<BOT_TOKEN>/sendMessage" \
   -d '{"chat_id": "<CHAT_ID>", "text": "Test message"}'
 
 # Test GitHub API access
-curl -H "Authorization: token <GITHUB_TOKEN>" \
+curl -H "Authorization: token <PERSONAL_GITHUB_TOKEN>" \
   https://api.github.com/user
 
 # Check webhook deliveries

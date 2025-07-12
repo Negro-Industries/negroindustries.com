@@ -162,7 +162,7 @@ async function fetchOrganizationRepositories(
 
         const response = await fetch(url, {
             headers: {
-                Authorization: `token ${process.env.GITHUB_TOKEN}`,
+                Authorization: `token ${process.env.PERSONAL_GITHUB_TOKEN}`,
                 Accept: "application/vnd.github.v3+json",
                 "User-Agent": "nextjs-app/1.0",
                 "X-GitHub-Api-Version": "2022-11-28",
