@@ -2,30 +2,30 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { GeneratedContent } from '@/lib/types/generated-content';
 
-interface ContentEntry {
-  id: string;
-  timestamp: string;
-  repository: string;
-  blogPost: {
-    title: string;
-    description: string;
-    body: string;
-    tags: string[];
-  };
-  socialMedia: {
-    twitter: string;
-    linkedin: string;
-    facebook: string;
+interface ContentStats {
+  total: number;
+  repositories: number;
+  recent: number;
+}
+
+interface ContentResponse {
+  content: GeneratedContent[];
+  stats: ContentStats;
+  pagination: {
+    limit: number;
+    offset: number;
+    hasMore: boolean;
   };
 }
 
 export function ContentViewer() {
-  const [content, setContent] = useState<ContentEntry[]>([]);
+  const [content, setContent] = useState<GeneratedContent[]>([]);
+  const [stats, setStats] = useState<ContentStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedContent, setSelectedContent] = useState<ContentEntry | null>(
-    null
-  );
+  const [selectedContent, setSelectedContent] =
+    useState<GeneratedContent | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   useEffect(() => {
@@ -36,8 +36,9 @@ export function ContentViewer() {
     try {
       const response = await fetch('/api/content?limit=20');
       if (response.ok) {
-        const data = await response.json();
+        const data: ContentResponse = await response.json();
         setContent(data.content || []);
+        setStats(data.stats);
       }
     } catch (error) {
       console.error('Failed to fetch content:', error);
@@ -54,6 +55,10 @@ export function ContentViewer() {
     } catch (error) {
       console.error('Failed to copy to clipboard:', error);
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString();
   };
 
   if (loading) {
@@ -74,6 +79,33 @@ export function ContentViewer() {
 
   return (
     <div className='space-y-6'>
+      {/* Stats Section */}
+      {stats && !selectedContent && (
+        <div className='bg-white p-6 rounded-lg border border-gray-200'>
+          <h2 className='text-lg font-semibold mb-4'>📊 Content Statistics</h2>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+            <div className='text-center'>
+              <div className='text-2xl font-bold text-blue-600'>
+                {stats.total}
+              </div>
+              <div className='text-sm text-gray-500'>Total Generated</div>
+            </div>
+            <div className='text-center'>
+              <div className='text-2xl font-bold text-green-600'>
+                {stats.repositories}
+              </div>
+              <div className='text-sm text-gray-500'>Repositories</div>
+            </div>
+            <div className='text-center'>
+              <div className='text-2xl font-bold text-purple-600'>
+                {stats.recent}
+              </div>
+              <div className='text-sm text-gray-500'>Last 7 Days</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Content List */}
       {!selectedContent && (
         <div className='grid gap-4'>
@@ -86,16 +118,31 @@ export function ContentViewer() {
               <div className='flex items-start justify-between'>
                 <div className='flex-1'>
                   <h3 className='font-semibold text-lg text-gray-900 mb-2'>
-                    {entry.blogPost.title}
+                    {entry.blog_title}
                   </h3>
                   <p className='text-gray-600 mb-3 line-clamp-2'>
-                    {entry.blogPost.description}
+                    {entry.blog_description}
                   </p>
-                  <div className='flex items-center gap-4 text-sm text-gray-500'>
-                    <span>📁 {entry.repository}</span>
-                    <span>🕒 {new Date(entry.timestamp).toLocaleString()}</span>
-                    <span>🏷️ {entry.blogPost.tags.length} tags</span>
+                  <div className='flex items-center gap-4 text-sm text-gray-500 mb-2'>
+                    <span>📁 {entry.repository_full_name}</span>
+                    <span>
+                      🕒{' '}
+                      {formatDate(
+                        entry.generation_timestamp || entry.created_at || ''
+                      )}
+                    </span>
+                    <span>🏷️ {entry.blog_tags.length} tags</span>
                   </div>
+                  {entry.commit_sha && (
+                    <div className='flex items-center gap-4 text-sm text-gray-400'>
+                      <span>🔗 {entry.commit_sha.substring(0, 7)}</span>
+                      {entry.commit_message && (
+                        <span className='truncate max-w-md'>
+                          💬 {entry.commit_message}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <Button variant='outline' size='sm'>
                   View Content →
@@ -114,10 +161,44 @@ export function ContentViewer() {
               ← Back to List
             </Button>
             <div className='text-sm text-gray-500'>
-              📁 {selectedContent.repository} • 🕒{' '}
-              {new Date(selectedContent.timestamp).toLocaleString()}
+              📁 {selectedContent.repository_full_name} • 🕒{' '}
+              {formatDate(
+                selectedContent.generation_timestamp ||
+                  selectedContent.created_at ||
+                  ''
+              )}
+              {selectedContent.commit_sha && (
+                <> • 🔗 {selectedContent.commit_sha.substring(0, 7)}</>
+              )}
             </div>
           </div>
+
+          {/* Commit Information */}
+          {selectedContent.commit_sha && (
+            <div className='bg-gray-50 p-4 rounded-lg border border-gray-200'>
+              <h3 className='font-medium text-gray-900 mb-2'>
+                🔗 Commit Information
+              </h3>
+              <div className='space-y-2 text-sm'>
+                <div>
+                  <span className='font-medium'>SHA:</span>{' '}
+                  {selectedContent.commit_sha}
+                </div>
+                {selectedContent.commit_message && (
+                  <div>
+                    <span className='font-medium'>Message:</span>{' '}
+                    {selectedContent.commit_message}
+                  </div>
+                )}
+                {selectedContent.generation_model && (
+                  <div>
+                    <span className='font-medium'>Generated by:</span>{' '}
+                    {selectedContent.generation_model}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Blog Post Section */}
           <div className='bg-white p-6 rounded-lg border border-gray-200'>
@@ -135,17 +216,14 @@ export function ContentViewer() {
                     variant='outline'
                     size='sm'
                     onClick={() =>
-                      copyToClipboard(
-                        selectedContent.blogPost.title,
-                        'blog-title'
-                      )
+                      copyToClipboard(selectedContent.blog_title, 'blog-title')
                     }
                   >
                     {copiedField === 'blog-title' ? 'Copied!' : 'Copy'}
                   </Button>
                 </div>
                 <div className='bg-gray-50 p-3 rounded border text-sm'>
-                  {selectedContent.blogPost.title}
+                  {selectedContent.blog_title}
                 </div>
               </div>
 
@@ -159,7 +237,7 @@ export function ContentViewer() {
                     size='sm'
                     onClick={() =>
                       copyToClipboard(
-                        selectedContent.blogPost.description,
+                        selectedContent.blog_description,
                         'blog-description'
                       )
                     }
@@ -168,7 +246,7 @@ export function ContentViewer() {
                   </Button>
                 </div>
                 <div className='bg-gray-50 p-3 rounded border text-sm'>
-                  {selectedContent.blogPost.description}
+                  {selectedContent.blog_description}
                 </div>
               </div>
 
@@ -182,7 +260,7 @@ export function ContentViewer() {
                     size='sm'
                     onClick={() =>
                       copyToClipboard(
-                        selectedContent.blogPost.tags.join(', '),
+                        selectedContent.blog_tags.join(', '),
                         'blog-tags'
                       )
                     }
@@ -191,7 +269,7 @@ export function ContentViewer() {
                   </Button>
                 </div>
                 <div className='bg-gray-50 p-3 rounded border text-sm'>
-                  {selectedContent.blogPost.tags.join(', ')}
+                  {selectedContent.blog_tags.join(', ')}
                 </div>
               </div>
 
@@ -204,10 +282,7 @@ export function ContentViewer() {
                     variant='outline'
                     size='sm'
                     onClick={() =>
-                      copyToClipboard(
-                        selectedContent.blogPost.body,
-                        'blog-body'
-                      )
+                      copyToClipboard(selectedContent.blog_body, 'blog-body')
                     }
                   >
                     {copiedField === 'blog-body' ? 'Copied!' : 'Copy'}
@@ -215,7 +290,7 @@ export function ContentViewer() {
                 </div>
                 <div className='bg-gray-50 p-3 rounded border text-sm max-h-64 overflow-y-auto'>
                   <pre className='whitespace-pre-wrap font-mono text-xs'>
-                    {selectedContent.blogPost.body}
+                    {selectedContent.blog_body}
                   </pre>
                 </div>
               </div>
@@ -235,7 +310,7 @@ export function ContentViewer() {
                   <label className='text-sm font-medium text-gray-700 flex items-center gap-2'>
                     🐦 Twitter/X
                     <span className='text-xs text-gray-500'>
-                      ({selectedContent.socialMedia.twitter.length}/280 chars)
+                      ({selectedContent.twitter_content.length}/280 chars)
                     </span>
                   </label>
                   <Button
@@ -243,7 +318,7 @@ export function ContentViewer() {
                     size='sm'
                     onClick={() =>
                       copyToClipboard(
-                        selectedContent.socialMedia.twitter,
+                        selectedContent.twitter_content,
                         'twitter'
                       )
                     }
@@ -252,7 +327,7 @@ export function ContentViewer() {
                   </Button>
                 </div>
                 <div className='bg-gray-50 p-3 rounded border text-sm'>
-                  {selectedContent.socialMedia.twitter}
+                  {selectedContent.twitter_content}
                 </div>
               </div>
 
@@ -262,7 +337,7 @@ export function ContentViewer() {
                   <label className='text-sm font-medium text-gray-700 flex items-center gap-2'>
                     💼 LinkedIn
                     <span className='text-xs text-gray-500'>
-                      ({selectedContent.socialMedia.linkedin.length}/1300 chars)
+                      ({selectedContent.linkedin_content.length}/1300 chars)
                     </span>
                   </label>
                   <Button
@@ -270,7 +345,7 @@ export function ContentViewer() {
                     size='sm'
                     onClick={() =>
                       copyToClipboard(
-                        selectedContent.socialMedia.linkedin,
+                        selectedContent.linkedin_content,
                         'linkedin'
                       )
                     }
@@ -279,7 +354,7 @@ export function ContentViewer() {
                   </Button>
                 </div>
                 <div className='bg-gray-50 p-3 rounded border text-sm max-h-32 overflow-y-auto'>
-                  {selectedContent.socialMedia.linkedin}
+                  {selectedContent.linkedin_content}
                 </div>
               </div>
 
@@ -289,7 +364,7 @@ export function ContentViewer() {
                   <label className='text-sm font-medium text-gray-700 flex items-center gap-2'>
                     📘 Facebook Business Page
                     <span className='text-xs text-gray-500'>
-                      ({selectedContent.socialMedia.facebook.length}/500 chars)
+                      ({selectedContent.facebook_content.length}/500 chars)
                     </span>
                   </label>
                   <Button
@@ -297,7 +372,7 @@ export function ContentViewer() {
                     size='sm'
                     onClick={() =>
                       copyToClipboard(
-                        selectedContent.socialMedia.facebook,
+                        selectedContent.facebook_content,
                         'facebook'
                       )
                     }
@@ -306,11 +381,73 @@ export function ContentViewer() {
                   </Button>
                 </div>
                 <div className='bg-gray-50 p-3 rounded border text-sm'>
-                  {selectedContent.socialMedia.facebook}
+                  {selectedContent.facebook_content}
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Telegram Summary Section */}
+          {selectedContent.telegram_summary && (
+            <div className='bg-white p-6 rounded-lg border border-gray-200'>
+              <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
+                📢 Telegram Summary
+              </h2>
+              <div className='flex items-center justify-between mb-2'>
+                <label className='text-sm font-medium text-gray-700'>
+                  Generated Summary
+                </label>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  onClick={() =>
+                    copyToClipboard(
+                      selectedContent.telegram_summary,
+                      'telegram-summary'
+                    )
+                  }
+                >
+                  {copiedField === 'telegram-summary' ? 'Copied!' : 'Copy'}
+                </Button>
+              </div>
+              <div className='bg-gray-50 p-3 rounded border text-sm max-h-48 overflow-y-auto'>
+                <pre className='whitespace-pre-wrap font-mono text-xs'>
+                  {selectedContent.telegram_summary}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          {/* Source Diff Section */}
+          {selectedContent.source_diff && (
+            <div className='bg-white p-6 rounded-lg border border-gray-200'>
+              <h2 className='text-xl font-semibold mb-4 flex items-center gap-2'>
+                📋 Source Diff
+              </h2>
+              <div className='flex items-center justify-between mb-2'>
+                <label className='text-sm font-medium text-gray-700'>
+                  CHANGELOG.md Changes
+                </label>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  onClick={() =>
+                    copyToClipboard(
+                      selectedContent.source_diff || '',
+                      'source-diff'
+                    )
+                  }
+                >
+                  {copiedField === 'source-diff' ? 'Copied!' : 'Copy'}
+                </Button>
+              </div>
+              <div className='bg-gray-50 p-3 rounded border text-sm max-h-48 overflow-y-auto'>
+                <pre className='whitespace-pre-wrap font-mono text-xs'>
+                  {selectedContent.source_diff}
+                </pre>
+              </div>
+            </div>
+          )}
 
           {/* Quick Actions */}
           <div className='bg-blue-50 p-4 rounded-lg border border-blue-200'>
@@ -320,9 +457,9 @@ export function ContentViewer() {
                 variant='outline'
                 onClick={() =>
                   copyToClipboard(
-                    selectedContent.blogPost.title +
+                    selectedContent.blog_title +
                       '\n\n' +
-                      selectedContent.blogPost.body,
+                      selectedContent.blog_body,
                     'full-blog'
                   )
                 }
@@ -334,7 +471,7 @@ export function ContentViewer() {
                 variant='outline'
                 onClick={() =>
                   copyToClipboard(
-                    `Twitter: ${selectedContent.socialMedia.twitter}\n\nLinkedIn: ${selectedContent.socialMedia.linkedin}\n\nFacebook: ${selectedContent.socialMedia.facebook}`,
+                    `Twitter: ${selectedContent.twitter_content}\n\nLinkedIn: ${selectedContent.linkedin_content}\n\nFacebook: ${selectedContent.facebook_content}`,
                     'all-social'
                   )
                 }
@@ -346,7 +483,7 @@ export function ContentViewer() {
                 variant='outline'
                 onClick={() =>
                   copyToClipboard(
-                    selectedContent.blogPost.tags.join(', '),
+                    selectedContent.blog_tags.join(', '),
                     'just-tags'
                   )
                 }

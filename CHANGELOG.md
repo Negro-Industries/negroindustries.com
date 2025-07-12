@@ -9,6 +9,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### 💾 Database Integration & Content Storage
+- **Supabase Database Integration**: Complete migration from in-memory storage to persistent Supabase database
+- **Generated Content Table** (`generated_content`): Comprehensive table for storing all AI-generated content
+  - Repository information (full name, commit SHA, commit message)
+  - Blog post content (title, description, body, tags)
+  - Social media content (Twitter, LinkedIn, Facebook)
+  - Telegram summaries and source diffs
+  - Generation metadata and timestamps
+- **Content Management APIs**: Full CRUD operations for generated content
+  - `GET /api/content` - List all content with statistics and pagination
+  - `POST /api/content` - Create new content entries
+  - `GET /api/content/[id]` - Retrieve specific content by ID
+  - `PUT /api/content/[id]` - Update existing content
+  - `DELETE /api/content/[id]` - Remove content entries
+  - `GET /api/content/repository/[repository]` - Get content by repository
+- **Content Statistics**: Automatic tracking of generation statistics
+  - Total content generated
+  - Number of unique repositories
+  - Recent activity (last 7 days)
+- **Enhanced Content Viewer**: Updated UI component with comprehensive content display
+  - Statistics dashboard
+  - Commit information display
+  - Telegram summary viewing
+  - Source diff visualization
+  - Enhanced copy functionality
+- **Database Migrations**: Automated database schema management
+  - Row Level Security (RLS) policies
+  - Proper indexes for performance
+  - Audit fields and triggers
+- **Content Testing**: Comprehensive test suite for content storage functionality
+
 #### 🚀 Core Infrastructure
 - **Next.js 15 Project Setup**: Initialized project with Next.js 15, TypeScript, and modern tooling
 - **ShadCN UI Integration**: Configured ShadCN UI component library with Tailwind CSS

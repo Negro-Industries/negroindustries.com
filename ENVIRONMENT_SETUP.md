@@ -88,6 +88,35 @@ After deploying to Vercel:
    - Go to: `https://github.com/YOUR_ORG/YOUR_REPO/settings/hooks`
    - Same configuration as above
 
+## Database Setup
+
+The system uses Supabase to store generated content. The database includes:
+
+### Tables Created
+- `generated_content`: Stores all AI-generated content including blog posts, social media content, and summaries
+- `activity_logs`: Stores system activity logs
+
+### Key Features
+- **Generated Content Storage**: All AI-generated content is automatically saved to the database
+- **Content Retrieval**: API endpoints for retrieving content by repository, ID, or general queries
+- **Statistics**: Automatic tracking of content generation statistics
+- **Row Level Security**: Proper RLS policies for secure access
+
+### Database Schema
+The `generated_content` table includes:
+- Repository information (full name, commit SHA, commit message)
+- Blog post content (title, description, body, tags)
+- Social media content (Twitter, LinkedIn, Facebook)
+- Telegram summary
+- Source diff and generation metadata
+- Timestamps and audit fields
+
+### Apply Database Migrations
+```bash
+# Apply the latest migrations to your Supabase database
+npx supabase db push
+```
+
 ## Testing Your Setup
 
 1. **Local Testing**:
@@ -105,6 +134,20 @@ After deploying to Vercel:
    - Make a commit to a monitored repository
    - Update CHANGELOG.md
    - Check Telegram for notification
+   - Check `/content` page for generated content
+   - Verify content is stored in Supabase database
+
+3. **Test Content API**:
+   ```bash
+   # Get all content
+   curl https://your-domain.com/api/content
+   
+   # Get content by repository
+   curl https://your-domain.com/api/content/repository/owner%2Frepo-name
+   
+   # Get specific content by ID
+   curl https://your-domain.com/api/content/[content-id]
+   ```
 
 ## Troubleshooting
 
@@ -122,6 +165,12 @@ After deploying to Vercel:
    - Check webhook is active in GitHub settings
    - Verify payload URL is correct
    - Check Vercel function logs
+
+4. **Content Not Storing**:
+   - Check Supabase connection and table setup
+   - Verify Supabase URL and keys are correct
+   - Run `npx supabase db push` to apply latest migrations
+   - Check database RLS policies are properly configured
 
 ### Debug Commands:
 

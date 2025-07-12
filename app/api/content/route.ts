@@ -1,40 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-
-// In-memory storage for demo purposes
-// In production, you'd want to use a proper database
-let contentStore: Array<{
-    id: string;
-    timestamp: string;
-    repository: string;
-    blogPost: {
-        title: string;
-        description: string;
-        body: string;
-        tags: string[];
-    };
-    socialMedia: {
-        twitter: string;
-        linkedin: string;
-        facebook: string;
-    };
-}> = [];
+import { generatedContentService } from "@/lib/services/generated-content";
+import { CreateGeneratedContentRequest } from "@/lib/types/generated-content";
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const limit = parseInt(searchParams.get("limit") || "10");
+        const offset = parseInt(searchParams.get("offset") || "0");
+        const repository = searchParams.get("repository") || undefined;
 
-        // Return the most recent content entries
-        const recentContent = contentStore
-            .sort((a, b) =>
-                new Date(b.timestamp).getTime() -
-                new Date(a.timestamp).getTime()
-            )
-            .slice(0, limit);
+        // Get content from database
+        const content = await generatedContentService.getAll({
+            repository,
+            limit,
+            offset,
+        });
+
+        // Get statistics
+        const stats = await generatedContentService.getStats();
 
         return NextResponse.json({
-            content: recentContent,
-            total: contentStore.length,
+            content,
+            stats,
+            pagination: {
+                limit,
+                offset,
+                hasMore: content.length === limit,
+            },
         });
     } catch (error) {
         console.error("Error fetching content:", error);
@@ -49,24 +41,47 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
 
-        const contentEntry = {
-            id: generateId(),
-            timestamp: new Date().toISOString(),
+        // Validate required fields
+        if (!body.repository || !body.blogPost || !body.socialMedia) {
+            return NextResponse.json(
+                {
+                    error:
+                        "Missing required fields: repository, blogPost, socialMedia",
+                },
+                { status: 400 },
+            );
+        }
+
+        // Create the content request
+        const contentRequest: CreateGeneratedContentRequest = {
             repository: body.repository,
-            blogPost: body.blogPost,
-            socialMedia: body.socialMedia,
+            commitSha: body.commitSha,
+            commitMessage: body.commitMessage,
+            blogPost: {
+                title: body.blogPost.title,
+                description: body.blogPost.description,
+                body: body.blogPost.body,
+                tags: body.blogPost.tags || [],
+            },
+            socialMedia: {
+                twitter: body.socialMedia.twitter,
+                linkedin: body.socialMedia.linkedin,
+                facebook: body.socialMedia.facebook,
+            },
+            telegramSummary: body.telegramSummary || "",
+            sourceDiff: body.sourceDiff,
+            generationModel: body.generationModel,
         };
 
-        contentStore.push(contentEntry);
-
-        // Keep only the latest 100 entries to prevent memory issues
-        if (contentStore.length > 100) {
-            contentStore = contentStore.slice(-100);
-        }
+        // Store in database
+        const storedContent = await generatedContentService.create(
+            contentRequest,
+        );
 
         return NextResponse.json({
             message: "Content stored successfully",
-            id: contentEntry.id,
+            id: storedContent.id,
+            content: storedContent,
         });
     } catch (error) {
         console.error("Error storing content:", error);
@@ -77,7 +92,29 @@ export async function POST(request: NextRequest) {
     }
 }
 
-function generateId(): string {
-    return Math.random().toString(36).substring(2, 15) +
-        Math.random().toString(36).substring(2, 15);
+export async function DELETE(request: NextRequest) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get("id");
+
+        if (!id) {
+            return NextResponse.json(
+                { error: "Missing required parameter: id" },
+                { status: 400 },
+            );
+        }
+
+        // Delete from database
+        await generatedContentService.delete(id);
+
+        return NextResponse.json({
+            message: "Content deleted successfully",
+        });
+    } catch (error) {
+        console.error("Error deleting content:", error);
+        return NextResponse.json(
+            { error: "Failed to delete content" },
+            { status: 500 },
+        );
+    }
 }

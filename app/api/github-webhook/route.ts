@@ -166,7 +166,13 @@ export async function POST(request: NextRequest) {
       await sendComprehensiveNotification(content);
 
       console.log("💾 Storing generated content for web access");
-      await storeGeneratedContent(repoFullName, content);
+      await storeGeneratedContent(
+        repoFullName,
+        content,
+        latestCommit.id,
+        latestCommit.message,
+        diff,
+      );
 
       console.log("💾 Updating repository config with latest commit SHA");
       await updateRepositoryConfig(
@@ -453,6 +459,9 @@ async function sendComprehensiveNotification(
 async function storeGeneratedContent(
   repository: string,
   content: ContentGeneration,
+  commitSha?: string,
+  commitMessage?: string,
+  sourceDiff?: string,
 ): Promise<void> {
   try {
     const response = await fetch(
@@ -466,8 +475,13 @@ async function storeGeneratedContent(
         },
         body: JSON.stringify({
           repository,
+          commitSha,
+          commitMessage,
           blogPost: content.blogPost,
           socialMedia: content.socialMedia,
+          telegramSummary: content.telegramSummary,
+          sourceDiff,
+          generationModel: "meta-llama/llama-4-maverick-17b-128e-instruct",
         }),
       },
     );
