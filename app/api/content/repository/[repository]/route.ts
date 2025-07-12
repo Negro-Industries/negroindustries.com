@@ -3,10 +3,11 @@ import { generatedContentService } from "@/lib/services/generated-content";
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { repository: string } },
+    props: { params: Promise<{ repository: string }> },
 ) {
     try {
-        const { repository } = await params;
+        const params = await props.params;
+        const { repository } = params;
         const { searchParams } = new URL(request.url);
         const limit = parseInt(searchParams.get("limit") || "10");
         const offset = parseInt(searchParams.get("offset") || "0");

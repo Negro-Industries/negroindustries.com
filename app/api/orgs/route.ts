@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { getOrganizationConfig } from "@/lib/storage/github-monitor";
 
 export async function GET() {
   try {

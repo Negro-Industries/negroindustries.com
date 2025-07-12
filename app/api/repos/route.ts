@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 interface RepositoryConfig {
     owner: string;
@@ -8,7 +8,7 @@ interface RepositoryConfig {
     fromOrg?: boolean;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         const repos = await listAllRepositories();
         return NextResponse.json(repos, {

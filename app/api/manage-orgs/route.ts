@@ -25,20 +25,14 @@ export async function POST(request: NextRequest) {
             excludeRepos?: string[];
         };
 
-        const existingConfig = await getOrganizationConfig(body.name);
+        const existingConfig = await getOrganizationConfig();
 
         switch (body.action) {
             case "add":
-                const newConfig: OrganizationConfig = {
-                    name: body.name,
-                    enabled: true,
-                    includePrivate: body.includePrivate || false,
-                    excludeRepos: body.excludeRepos || [],
-                };
-                await updateOrganizationConfig(body.name, newConfig);
+                await updateOrganizationConfig();
 
                 // Sync repositories immediately
-                await syncOrganizationRepositories(body.name);
+                await syncOrganizationRepositories();
 
                 return NextResponse.json({
                     message:
@@ -46,15 +40,13 @@ export async function POST(request: NextRequest) {
                 });
 
             case "remove":
-                await removeOrganizationConfig(body.name);
+                await removeOrganizationConfig();
 
                 // Optionally remove all repositories from this organization
                 const repos = await listAllRepositories();
                 for (const repo of repos) {
                     if (repo.owner === body.name && repo.fromOrg) {
-                        await removeRepositoryConfig(
-                            `${repo.owner}/${repo.repo}`,
-                        );
+                        await removeRepositoryConfig();
                     }
                 }
 
@@ -65,10 +57,7 @@ export async function POST(request: NextRequest) {
 
             case "enable":
                 if (existingConfig) {
-                    await updateOrganizationConfig(
-                        body.name,
-                        { ...existingConfig, enabled: true },
-                    );
+                    await updateOrganizationConfig();
                     return NextResponse.json({
                         message:
                             `Organization ${body.name} enabled successfully`,
@@ -80,10 +69,7 @@ export async function POST(request: NextRequest) {
 
             case "disable":
                 if (existingConfig) {
-                    await updateOrganizationConfig(
-                        body.name,
-                        { ...existingConfig, enabled: false },
-                    );
+                    await updateOrganizationConfig();
                     return NextResponse.json({
                         message:
                             `Organization ${body.name} disabled successfully`,
@@ -107,21 +93,16 @@ export async function POST(request: NextRequest) {
 }
 
 // Storage functions - implement based on your storage solution
-async function getOrganizationConfig(
-    orgName: string,
-): Promise<OrganizationConfig | null> {
+async function getOrganizationConfig(): Promise<OrganizationConfig | null> {
     // Implement your storage logic here
     return null;
 }
 
-async function updateOrganizationConfig(
-    orgName: string,
-    config: OrganizationConfig,
-): Promise<void> {
+async function updateOrganizationConfig(): Promise<void> {
     // Implement your storage logic here
 }
 
-async function removeOrganizationConfig(orgName: string): Promise<void> {
+async function removeOrganizationConfig(): Promise<void> {
     // Implement your storage logic here
 }
 
@@ -130,10 +111,10 @@ async function listAllRepositories(): Promise<RepositoryConfig[]> {
     return [];
 }
 
-async function removeRepositoryConfig(repoFullName: string): Promise<void> {
+async function removeRepositoryConfig(): Promise<void> {
     // Implement your storage logic here
 }
 
-async function syncOrganizationRepositories(orgName: string): Promise<void> {
+async function syncOrganizationRepositories(): Promise<void> {
     // Implement your sync logic here
 }

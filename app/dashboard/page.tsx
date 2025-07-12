@@ -145,7 +145,7 @@ export default function DashboardPage() {
               </div>
             </div>
           ) : (
-            recentActivity.map((activity, index) => (
+            recentActivity.map(activity => (
               <div
                 key={activity.id}
                 className='flex items-center justify-between bg-gray-800 p-3 rounded border border-gray-700'

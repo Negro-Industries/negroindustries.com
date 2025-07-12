@@ -77,7 +77,7 @@ export function OrganizationManager() {
           text: result.error || 'Failed to add organization',
         });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Network error occurred' });
     } finally {
       setIsSubmitting(false);

@@ -63,7 +63,7 @@ async function syncOrganizationRepositories(orgName: string): Promise<void> {
     try {
         console.log(`🔄 Starting sync for organization: ${orgName}`);
 
-        const orgConfig = await getOrganizationConfig(orgName);
+        const orgConfig = await getOrganizationConfig();
         if (!orgConfig || !orgConfig.enabled) {
             console.log(
                 `❌ Organization ${orgName} not configured or disabled`,
@@ -100,20 +100,14 @@ async function syncOrganizationRepositories(orgName: string): Promise<void> {
             }
 
             // Check if repository is already being monitored
-            const existingConfig = await getRepositoryConfig(repo.full_name);
+            const existingConfig = await getRepositoryConfig();
 
             if (!existingConfig) {
                 console.log(
                     `➕ Adding new repository to monitoring: ${repo.full_name}`,
                 );
-                const repoConfig: RepositoryConfig = {
-                    owner: repo.owner.login,
-                    repo: repo.name,
-                    enabled: true,
-                    fromOrg: true,
-                };
 
-                await updateRepositoryConfig(repo.full_name, repoConfig);
+                await updateRepositoryConfig();
                 addedCount++;
             } else {
                 console.log(
@@ -123,10 +117,7 @@ async function syncOrganizationRepositories(orgName: string): Promise<void> {
         }
 
         console.log(`💾 Updating organization sync time for ${orgName}`);
-        await updateOrganizationConfig(orgName, {
-            ...orgConfig,
-            lastSyncTime: new Date().toISOString(),
-        });
+        await updateOrganizationConfig();
 
         if (addedCount > 0) {
             console.log(
@@ -254,30 +245,20 @@ async function listAllOrganizations(): Promise<OrganizationConfig[]> {
     return [];
 }
 
-async function getOrganizationConfig(
-    orgName: string,
-): Promise<OrganizationConfig | null> {
+async function getOrganizationConfig(): Promise<OrganizationConfig | null> {
     // Implement your storage logic here
     return null;
 }
 
-async function updateOrganizationConfig(
-    orgName: string,
-    config: OrganizationConfig,
-): Promise<void> {
+async function updateOrganizationConfig(): Promise<void> {
     // Implement your storage logic here
 }
 
-async function getRepositoryConfig(
-    repoFullName: string,
-): Promise<RepositoryConfig | null> {
+async function getRepositoryConfig(): Promise<RepositoryConfig | null> {
     // Implement your storage logic here
     return null;
 }
 
-async function updateRepositoryConfig(
-    repoFullName: string,
-    config: RepositoryConfig,
-): Promise<void> {
+async function updateRepositoryConfig(): Promise<void> {
     // Implement your storage logic here
 }

@@ -64,7 +64,9 @@ export async function POST(request: NextRequest) {
     }
 }
 
-async function handleTelegramMessage(message: any): Promise<void> {
+async function handleTelegramMessage(
+    message: NonNullable<TelegramUpdate["message"]>,
+): Promise<void> {
     const chatId = message.chat.id;
     const text = message.text;
     const firstName = message.from.first_name;

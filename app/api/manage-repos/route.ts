@@ -17,33 +17,24 @@ export async function POST(request: NextRequest) {
         };
 
         const repoFullName = `${body.owner}/${body.repo}`;
-        const existingConfig = await getRepositoryConfig(repoFullName);
+        const existingConfig = await getRepositoryConfig();
 
         switch (body.action) {
             case "add":
-                const newConfig: RepositoryConfig = {
-                    owner: body.owner,
-                    repo: body.repo,
-                    enabled: true,
-                    fromOrg: false,
-                };
-                await updateRepositoryConfig(repoFullName, newConfig);
+                await updateRepositoryConfig();
                 return NextResponse.json({
                     message: `Repository ${repoFullName} added successfully`,
                 });
 
             case "remove":
-                await removeRepositoryConfig(repoFullName);
+                await removeRepositoryConfig();
                 return NextResponse.json({
                     message: `Repository ${repoFullName} removed successfully`,
                 });
 
             case "enable":
                 if (existingConfig) {
-                    await updateRepositoryConfig(
-                        repoFullName,
-                        { ...existingConfig, enabled: true },
-                    );
+                    await updateRepositoryConfig();
                     return NextResponse.json({
                         message:
                             `Repository ${repoFullName} enabled successfully`,
@@ -55,10 +46,7 @@ export async function POST(request: NextRequest) {
 
             case "disable":
                 if (existingConfig) {
-                    await updateRepositoryConfig(
-                        repoFullName,
-                        { ...existingConfig, enabled: false },
-                    );
+                    await updateRepositoryConfig();
                     return NextResponse.json({
                         message:
                             `Repository ${repoFullName} disabled successfully`,
@@ -82,23 +70,18 @@ export async function POST(request: NextRequest) {
 }
 
 // Storage functions - implement based on your storage solution
-async function getRepositoryConfig(
-    repoFullName: string,
-): Promise<RepositoryConfig | null> {
+async function getRepositoryConfig(): Promise<RepositoryConfig | null> {
     // Implement your storage logic here
     // This could be a database query, Redis get, etc.
     return null;
 }
 
-async function updateRepositoryConfig(
-    repoFullName: string,
-    config: RepositoryConfig,
-): Promise<void> {
+async function updateRepositoryConfig(): Promise<void> {
     // Implement your storage logic here
     // This could be a database insert/update, Redis set, etc.
 }
 
-async function removeRepositoryConfig(repoFullName: string): Promise<void> {
+async function removeRepositoryConfig(): Promise<void> {
     // Implement your storage logic here
     // This could be a database delete, Redis del, etc.
 }
