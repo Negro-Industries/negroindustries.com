@@ -10,9 +10,13 @@ test.describe("Homepage", () => {
         // Check that the page title contains expected text
         await expect(page).toHaveTitle(/Negro Industries/);
 
-        // Check for basic page elements
-        const main = page.locator("main");
-        await expect(main).toBeVisible();
+        // Check for basic page elements - use div instead of main
+        const container = page.locator("div.min-h-screen");
+        await expect(container).toBeVisible();
+
+        // Check for the ASCII art logo
+        const logo = page.locator("pre");
+        await expect(logo).toBeVisible();
     });
 
     test("should have working navigation", async ({ page }) => {
@@ -37,9 +41,13 @@ test.describe("Content Page", () => {
         // Check that we're on the content page
         await expect(page).toHaveURL(/content/);
 
-        // Check for main content area
-        const main = page.locator("main");
-        await expect(main).toBeVisible();
+        // Check for main content area - use div instead of main
+        const container = page.locator("div.min-h-screen");
+        await expect(container).toBeVisible();
+
+        // Check for the content archive header
+        const header = page.getByText("AI-GENERATED CONTENT ARCHIVE");
+        await expect(header).toBeVisible();
     });
 });
 
@@ -52,9 +60,13 @@ test.describe("Dashboard Page", () => {
         // Check that we're on the dashboard page
         await expect(page).toHaveURL(/dashboard/);
 
-        // Check for main content area
-        const main = page.locator("main");
-        await expect(main).toBeVisible();
+        // Check for main content area - use div instead of main
+        const container = page.locator("div.min-h-screen");
+        await expect(container).toBeVisible();
+
+        // Check for system status panel
+        const systemStatus = page.getByText("SYSTEM STATUS");
+        await expect(systemStatus).toBeVisible();
     });
 });
 
