@@ -59,11 +59,9 @@
       "title": "Configure Supabase for logging",
       "description": "Set up Supabase project and configure it for activity logging.",
       "status": "done",
-      "dependencies": [
-        1
-      ],
+      "dependencies": [1],
       "priority": "high",
-      "details": "1. Create a new Supabase project\n2. Set up the activity_logs table using the provided SQL schema\n3. Generate and securely store Supabase API keys\n4. Install @supabase/supabase-js library (latest version)\n5. Create a Supabase client in lib/supabase.ts\n6. Implement basic CRUD operations for activity logs",
+      "details": "1. Create a new Supabase project\n2. Set up the activity_logs table using the provided SQL schema\n3. Generate and securely store Supabase API keys\n4. Install @supabase/supabase-js library (latest version)\n5. Create a Supabase client in types/supabase.ts\n6. Implement basic CRUD operations for activity logs",
       "testStrategy": "Write unit tests for Supabase CRUD operations using Jest and mock the Supabase client.",
       "subtasks": [
         {
@@ -76,7 +74,7 @@
           "id": 2.2,
           "title": "Create Supabase client configuration",
           "status": "completed",
-          "description": "Set up Supabase client in lib/supabase.ts"
+          "description": "Set up Supabase client in types/supabase.ts"
         },
         {
           "id": 2.3,

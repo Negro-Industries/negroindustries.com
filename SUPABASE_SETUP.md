@@ -60,7 +60,7 @@ The schema includes basic RLS policies, but you may want to customize them based
 ## 7. Sample Usage
 
 ```typescript
-import { activityLogService } from '@/lib/supabase'
+import { activityLogService } from '@/types/supabase'
 
 // Create a new log entry
 const newLog = await activityLogService.create({

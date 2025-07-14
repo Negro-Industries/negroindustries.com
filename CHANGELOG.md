@@ -99,10 +99,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **GitHub Monitor Library** (`lib/storage/github-monitor.ts`): 
   - Organization and repository configuration management
   - Persistent storage layer for monitoring settings
-- **Type Definitions** (`lib/types/github-monitor.ts`): 
+- **Type Definitions** (`types/github-monitor.ts`): 
   - Comprehensive TypeScript interfaces for GitHub webhooks
   - Repository and organization configuration types
-- **Supabase Integration** (`lib/supabase.ts`): Database and authentication setup
+- **Supabase Integration** (`types/supabase.ts`): Database and authentication setup
 - **Utility Functions** (`lib/utils.ts`): Common helper functions and utilities
 
 #### 📋 Development Workflow & Task Management
