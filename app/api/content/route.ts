@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generatedContentService } from "@/lib/services/generated-content";
-import { CreateGeneratedContentRequest } from "@/lib/types/generated-content";
+import { CreateGeneratedContentRequest } from "@/types/generated-content";
 
 export async function GET(request: NextRequest) {
     try {

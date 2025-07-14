@@ -1,7 +1,7 @@
 import {
     OrganizationConfig,
     RepositoryConfig,
-} from "@/lib/types/github-monitor";
+} from "@/types/github-monitor";
 
 // Simple in-memory storage - replace with your preferred storage solution
 // (database, Redis, file system, etc.)

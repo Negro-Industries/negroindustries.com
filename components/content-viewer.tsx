@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { GeneratedContent } from '@/lib/types/generated-content';
+import { GeneratedContent } from '@/types/generated-content';
 
 interface ContentStats {
   total: number;

@@ -5,7 +5,7 @@ import {
   GitHubRepository,
   GitHubWebhookPayload,
   RepositoryConfig,
-} from "@/lib/types/github-monitor";
+} from "@/types/github-monitor";
 import {
   getOrganizationConfig,
   getRepositoryConfig,

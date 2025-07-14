@@ -3,7 +3,7 @@ import {
     CreateGeneratedContentRequest,
     GeneratedContent,
     GeneratedContentSummary,
-} from "@/lib/types/generated-content";
+} from "@/types/generated-content";
 
 export const generatedContentService = {
     // Create a new generated content entry
